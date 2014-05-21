@@ -1,0 +1,37 @@
+#! /bin/csh -f
+
+#===============================================================================
+# Goldbach machine specific settings
+#===============================================================================
+
+limit stacksize unlimited
+limit coredumpsize unlimited
+if ( $COMPILER == "intel" ) then
+    setenv MPI_PATH /cluster/openmpi-1.4.3-qlc-intel-cluster-2013.4.183
+    setenv INTEL /usr/local/intel-cluster-2013.4.183
+    # Runtime environment variables
+    setenv PATH ${MPI_PATH}/bin:${INTEL}/bin:${PATH}
+    setenv LD_LIBRARY_PATH /usr/local/intel-cluster-2013.4.183/composer_xe_2013.4.183/compiler/lib/intel64:${MPI_PATH}/lib64:/usr/local/netcdf-4.3.0-intel-cluster-2013.4.183/lib
+    setenv P4_GLOBMEMSIZE 500000000
+endif
+
+
+if ( $COMPILER == "pgi" ) then
+    setenv MPI_PATH /cluster/openmpi-qlc-pgi
+    setenv PGI /usr/local/pgi-pgcc-pghf-13.7
+    # Runtime environment variables
+    setenv PATH ${PGI}/linux86/bin:${MPI_PATH}/bin:${PATH}
+    setenv LD_LIBRARY_PATH ${PGI}/linux86-64/lib:${PGI}/linux86-64/libso:/usr/local/netcdf-4.3.0-pgi-pgcc-pghf-13.7/lib:/usr/local/pgi-pg-pgcc-pghf-13.7/linux86-64/lib:${MPI_PATH}/lib64
+    setenv P4_GLOBMEMSIZE 500000000
+endif
+
+
+if ( $COMPILER == "nag" ) then
+    setenv MPI_PATH /usr/local/openmpi-gcc-nag
+    setenv NAG /usr/local/nag
+    source $NAG/nag-tcsh.rc
+    # Runtime environment variables
+    setenv PATH ${NAG}/bin:${MPI_PATH}/bin:${PATH}
+    setenv LD_LIBRARY_PATH ${MPI_PATH}/lib:/usr/local/lib:/usr/local/netcdf-gcc-nag
+    setenv P4_GLOBMEMSIZE 500000000
+endif
