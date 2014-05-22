@@ -1,0 +1,63 @@
+#! /bin/csh -f
+
+#--- set modules
+source /etc/profile.d/modules.csh
+#source /share/apps/modules/Modules/3.2.7/init/csh
+if ( $COMPILER == "intel" ) then
+    #MODULES UNLOAD
+    unsetenv LD_LIBRARY_PATH
+    module unload lahey
+    module unload intel
+    module unload pgi
+    module unload mpi
+    module unload mpi
+    module unload mpi
+    module unload netcdf
+    module unload netcdf
+    module unload netcdf
+    module unload udunits
+    #Module load
+    module load intel/13.0.1.117
+    module load mpi/mvapich2/1.7/intel/11.1
+    module load netcdf/4.1.1/intel
+    setenv NETCDF_LIB '/share/apps/netcdf/4.1.1/intel/lib'
+endif
+if ( $COMPILER == "pgi" ) then
+ unsetenv LD_LIBRARY_PATH
+    module unload lahey
+    module unload intel
+    module unload pgi
+    module unload mpi
+    module unload mpi
+    module unload mpi
+    module unload netcdf
+    module unload netcdf
+    module unload netcdf
+    module unload udunits
+#    module purge
+#    module load precision/i4
+    module load pgi/12.2
+    module load mpi/mvapich2/1.7/pgi/11.10
+    module load netcdf/4.1.3/pgi/12.2
+endif
+#module list
+
+#--- set paths
+#setenv PGI_PATH /share/apps/pgi/linux86-64/9.0-4
+#setenv MPICH_PATH /share/apps/mvapich-1.0.1/pgi
+#setenv MPICH_PATH /share/apps/mvapich2-1.0.3/pgi
+#setenv MPICH_PATH /share/apps/openmpi-1.2.6/pgi
+#setenv PATH ${PGI_PATH}/bin:${MPICH_PATH}/bin:${PATH}
+#setenv LD_LIBRARY_PATH ${MPICH_PATH}/lib:${LD_LIBRARY_PATH}
+
+#--- set env variables for Macros if needed
+#setenv NETCDF ${NETCDF_HOME}
+#setenv PNETCDF /share/apps/pnetcdf/mvapich-1.0.1/pgi
+#setenv LD_LIBRARY_PATH ${NETCDF}/lib:${LD_LIBRARY_PATH}
+
+#-------------------------------------------------------------------------------
+
+limit coredumpsize 1000000
+limit stacksize unlimited
+
+
