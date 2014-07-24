@@ -49,6 +49,11 @@ use shr_spfn_mod, only: gamma => shr_spfn_gamma
        svp_ice => wv_sat_svp_ice, &
        svp_to_qsat => wv_sat_svp_to_qsat
 
+!use ppgrid,         only: psubcols
+!use cam_history,    only: addfld, add_default, phys_decomp, outfld
+!use cam_history,    only: outfld
+!use phys_control,   only: phys_getopts
+
 implicit none
 private
 save
@@ -354,7 +359,9 @@ subroutine micro_mg_tend ( &
      ncai, ncal, qrout2, qsout2, nrout2,              &
      nsout2, drout2, dsout2, freqs, freqr,            &
      nfice, do_cldice, tnd_qsnow,                     &
-     tnd_nsnow, re_ice, errstring)
+     tnd_nsnow, re_ice, errstring, ncic_mg1, dumnc_mg1)
+!     tnd_nsnow, re_ice, errstring, lchnk)
+!     tnd_nsnow, re_ice, errstring, ncic_mg1, dumnc_mg1, pgam_mg1, lamc_mg1)
 
 ! input arguments
 logical,  intent(in) :: microp_uniform  ! True = configure uniform for sub-columns  False = use w/o sub-columns (standard)
@@ -393,6 +400,8 @@ logical,  intent(in) :: do_cldice             ! Prognosing cldice
 real(r8), intent(in) :: tnd_qsnow(pcols,pver) ! snow mass tendency (kg/kg/s)
 real(r8), intent(in) :: tnd_nsnow(pcols,pver) ! snow number tendency (#/kg/s)
 real(r8), intent(in) :: re_ice(pcols,pver)    ! ice effective radius (m)
+
+!integer, intent(in) :: lchnk ! SMB+
 
 ! output arguments
 
@@ -562,12 +571,14 @@ real(r8) :: qiic(pcols,pver) ! in-cloud cloud ice mixing ratio
 real(r8) :: qniic(pcols,pver) ! in-precip snow mixing ratio
 real(r8) :: qric(pcols,pver) ! in-precip rain mixing ratio
 real(r8) :: ncic(pcols,pver) ! in-cloud droplet number conc
+real(r8), intent(out) :: ncic_mg1(pcols,pver) ! in-cloud droplet number conc ! SMB
 real(r8) :: niic(pcols,pver) ! in-cloud cloud ice number conc
 real(r8) :: nsic(pcols,pver) ! in-precip snow number conc
 real(r8) :: nric(pcols,pver) ! in-precip rain number conc
 real(r8) :: lami(pver) ! slope of cloud ice size distr
 real(r8) :: n0i(pver) ! intercept of cloud ice size distr
 real(r8) :: lamc(pver) ! slope of cloud liquid size distr
+!real(r8), intent(out) :: lamc_mg1(pver) ! slope of cloud liquid size distr !SMB
 real(r8) :: n0c(pver) ! intercept of cloud liquid size distr
 real(r8) :: lams(pver) ! slope of snow size distr
 real(r8) :: n0s(pver) ! intercept of snow size distr
@@ -580,6 +591,7 @@ real(r8) :: Actmp  !area cross section of drops
 real(r8) :: Artmp  !area cross section of rain
 
 real(r8) :: pgam(pver) ! spectral width parameter of droplet size distr
+!real(r8), intent(out) :: pgam_mg1(pver) ! spectral width parameter of droplet size distr ! SMB
 real(r8) :: lammax  ! maximum allowed slope of size distr
 real(r8) :: lammin  ! minimum allowed slope of size distr
 real(r8) :: nacnt   ! number conc of contact ice nuclei
@@ -637,6 +649,7 @@ real(r8) :: nie ! dummy ni for conservation check
 real(r8) :: ratio ! parameter for conservation check
 real(r8) :: dumc(pcols,pver) ! dummy in-cloud qc
 real(r8) :: dumnc(pcols,pver) ! dummy in-cloud nc
+real(r8), intent(out) :: dumnc_mg1(pcols,pver) ! dummy in-cloud nc ! SMB
 real(r8) :: dumi(pcols,pver) ! dummy in-cloud qi
 real(r8) :: dumni(pcols,pver) ! dummy in-cloud ni
 real(r8) :: dums(pcols,pver) ! dummy in-cloud snow mixing rat
@@ -3496,6 +3509,27 @@ do k=top_lev,pver
    enddo
 enddo
 
+!!!! SMB diagnostic output 20140723
+!  call addfld ('NCIC    ', 'm-3     ', pver, 'I', 'ncic from microphysics'      ,phys_decomp)
+!  call addfld ('DUMNC   ', 'm-3     ', pver, 'I', 'dumnc from microphysics'     ,phys_decomp)
+!  call addfld ('PGAM_MP ', ' ',        pver, 'I', 'pgam at end of microphysics' ,phys_decomp)
+!  call addfld ('LAMC_MP ', ' ',        pver, 'I', 'lamc at end of microphysics' ,phys_decomp)
+!  call addfld ('PGAMRAD ', ' ',        pver, 'I', 'pgamrad from microphysics'   ,phys_decomp)
+!  call addfld ('LAMCRAD ', ' ',        pver, 'I', 'lamcrad from microphysics'   ,phys_decomp)
+!
+!  call outfld('NCIC',        ncic,        pcols, lchnk)
+!  call outfld('DUMNC',       dumnc,       pcols, lchnk)
+!  call outfld('PGAM_MP',     pgam,        pcols, lchnk)
+!  call outfld('LAMC_MP',     lamc,        pcols, lchnk)
+!  call outfld('PGAMRAD',     pgamrad,     pcols, lchnk)
+!  call outfld('LAMCRAD',     lamcrad,     pcols, lchnk)
+
+ncic_mg1 = ncic
+dumnc_mg1 = dumnc
+!pgam_mg1 = pgam
+!lamc_mg1 = lamc
+
+!!!! END SMB diagnostic output 20140723
 
 end subroutine micro_mg_tend
 
