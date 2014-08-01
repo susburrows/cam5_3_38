@@ -1,3 +1,4 @@
 *.svn
 SVN_EXTERNAL_DIRECTORIES
 *~
+models/atm/cam/bld/*
