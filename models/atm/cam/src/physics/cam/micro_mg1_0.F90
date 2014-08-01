@@ -359,9 +359,8 @@ subroutine micro_mg_tend ( &
      ncai, ncal, qrout2, qsout2, nrout2,              &
      nsout2, drout2, dsout2, freqs, freqr,            &
      nfice, do_cldice, tnd_qsnow,                     &
-     tnd_nsnow, re_ice, errstring, ncic_mg1, dumnc_mg1)
-!     tnd_nsnow, re_ice, errstring, lchnk)
-!     tnd_nsnow, re_ice, errstring, ncic_mg1, dumnc_mg1, pgam_mg1, lamc_mg1)
+     tnd_nsnow, re_ice, errstring, &
+     rho_mg1, ncic_mg1, dumc_mg1, dumnc_mg1) ! SMB+
 
 ! input arguments
 logical,  intent(in) :: microp_uniform  ! True = configure uniform for sub-columns  False = use w/o sub-columns (standard)
@@ -521,6 +520,7 @@ real(r8) :: mincld  ! minimum allowed cloud fraction
 real(r8) :: q(pcols,pver) ! water vapor mixing ratio (kg/kg)
 real(r8) :: t(pcols,pver) ! temperature (K)
 real(r8) :: rho(pcols,pver) ! air density (kg m-3)
+real(r8), intent(out) :: rho_mg1(pcols,pver) ! air density (kg m-3) ! SMB
 real(r8) :: dv(pcols,pver)  ! diffusivity of water vapor in air
 real(r8) :: mu(pcols,pver)  ! viscocity of air
 real(r8) :: sc(pcols,pver)  ! schmidt number
@@ -648,6 +648,7 @@ real(r8) :: nce ! dummy nc for conservation check
 real(r8) :: nie ! dummy ni for conservation check
 real(r8) :: ratio ! parameter for conservation check
 real(r8) :: dumc(pcols,pver) ! dummy in-cloud qc
+real(r8), intent(out) :: dumc_mg1(pcols,pver) ! dummy in-cloud qc ! SMB
 real(r8) :: dumnc(pcols,pver) ! dummy in-cloud nc
 real(r8), intent(out) :: dumnc_mg1(pcols,pver) ! dummy in-cloud nc ! SMB
 real(r8) :: dumi(pcols,pver) ! dummy in-cloud qi
@@ -3241,6 +3242,13 @@ do i=1,ncol
       !...................
       ! cloud droplet effective radius
 
+!!!! SMB diagnostic output 20140801
+      ncic_mg1 = ncic
+      dumnc_mg1 = dumnc
+      dumc_mg1 = dumc
+      rho_mg1 = rho
+!!!! END SMB diagnostic output 20140801
+
       if (dumc(i,k).ge.qsmall) then
 
          ! add upper limit to in-cloud number concentration to prevent numerical error
@@ -3508,28 +3516,6 @@ do k=top_lev,pver
 
    enddo
 enddo
-
-!!!! SMB diagnostic output 20140723
-!  call addfld ('NCIC    ', 'm-3     ', pver, 'I', 'ncic from microphysics'      ,phys_decomp)
-!  call addfld ('DUMNC   ', 'm-3     ', pver, 'I', 'dumnc from microphysics'     ,phys_decomp)
-!  call addfld ('PGAM_MP ', ' ',        pver, 'I', 'pgam at end of microphysics' ,phys_decomp)
-!  call addfld ('LAMC_MP ', ' ',        pver, 'I', 'lamc at end of microphysics' ,phys_decomp)
-!  call addfld ('PGAMRAD ', ' ',        pver, 'I', 'pgamrad from microphysics'   ,phys_decomp)
-!  call addfld ('LAMCRAD ', ' ',        pver, 'I', 'lamcrad from microphysics'   ,phys_decomp)
-!
-!  call outfld('NCIC',        ncic,        pcols, lchnk)
-!  call outfld('DUMNC',       dumnc,       pcols, lchnk)
-!  call outfld('PGAM_MP',     pgam,        pcols, lchnk)
-!  call outfld('LAMC_MP',     lamc,        pcols, lchnk)
-!  call outfld('PGAMRAD',     pgamrad,     pcols, lchnk)
-!  call outfld('LAMCRAD',     lamcrad,     pcols, lchnk)
-
-ncic_mg1 = ncic
-dumnc_mg1 = dumnc
-!pgam_mg1 = pgam
-!lamc_mg1 = lamc
-
-!!!! END SMB diagnostic output 20140723
 
 end subroutine micro_mg_tend
 

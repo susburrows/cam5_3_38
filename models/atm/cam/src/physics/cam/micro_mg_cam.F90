@@ -648,12 +648,14 @@ subroutine micro_mg_cam_init(pbuf2d)
   call addfld('VPRAO' , 'kg/kg/s', 1, 'A', 'Vertical average of accretion rate',                    phys_decomp )
   call addfld('RACAU' , 'kg/kg/s', 1, 'A', 'Accretion/autoconversion ratio from vertical average',       phys_decomp )
 
-!!!! SMB diagnostic output 20140723
+!!!! SMB diagnostic output 20140801
   call addfld ('NCIC    ', 'm-3     ', pver, 'A', 'ncic from microphysics'      ,phys_decomp)
+  call addfld ('RHO_MG  ', 'kg mol-1', pver, 'A', 'rho from microphysics'      ,phys_decomp)
+  call addfld ('DUMC    ', 'm-3     ', pver, 'A', 'dumc from microphysics'      ,phys_decomp)
   call addfld ('DUMNC   ', 'm-3     ', pver, 'A', 'dumnc from microphysics'     ,phys_decomp)
   call addfld ('PGAM_MP ', 'm-3     ', pver, 'A', 'pgamrad from microphysics'   ,phys_decomp)
   call addfld ('LAMC_MP ', 'm-3     ', pver, 'A', 'lamcrad from microphysics'   ,phys_decomp)
-!!!! END SMB diagnostic output 20140723
+!!!! END SMB diagnostic output 20140801
 
   ! determine the add_default fields
   call phys_getopts(history_amwg_out           = history_amwg         , &
@@ -1120,10 +1122,12 @@ subroutine micro_mg_cam_tend(state, ptend, dtime, pbuf)
   real(r8),pointer :: nrout_grid_ptr(:,:)
   real(r8),pointer :: nsout_grid_ptr(:,:)
 
-real(r8) :: ncic_mg1(pcols,pver) ! in-cloud droplet number conc ! SMB
-real(r8) :: dumnc_mg1(pcols,pver) ! dummy in-cloud nc ! SMB
-!real(r8) :: lamc_mg1(pver) ! slope of cloud liquid size distr !SMB
-!real(r8) :: pgam_mg1(pver) ! spectral width parameter of droplet size distr ! SMB
+!!!! SMB diagnostic output 20140801
+  real(r8) :: ncic_mg1(pcols,pver)  ! in-cloud droplet number conc
+  real(r8) :: rho_mg1(pcols,pver)   ! rho from mg1
+  real(r8) :: dumc_mg1(pcols,pver)  ! dummy in-cloud cld liq wat
+  real(r8) :: dumnc_mg1(pcols,pver) ! dummy in-cloud nc
+!!!! END SMB diagnostic output 20140801
   
   integer :: nlev   ! number of levels where cloud physics is done
   integer :: mgncol ! size of mgcols
@@ -1358,9 +1362,8 @@ real(r8) :: dumnc_mg1(pcols,pver) ! dummy in-cloud nc ! SMB
              ncai, ncal, qrout2, qsout2, nrout2,              &
              nsout2, drout2, dsout2, freqs, freqr,            &
              nfice, do_cldice, tnd_qsnow,                     &
-             tnd_nsnow, re_ice, errstring, ncic_mg1, dumnc_mg1)
-!             tnd_nsnow, re_ice, errstring, lchnk)
-!             tnd_nsnow, re_ice, errstring, ncic_mg1, dumnc_mg1, pgam_mg1, lamc_mg1)
+             tnd_nsnow, re_ice, errstring, &
+             rho_mg1, ncic_mg1, dumc_mg1, dumnc_mg1) ! SMB+
 
 
      case (5)
@@ -2046,14 +2049,14 @@ real(r8) :: dumnc_mg1(pcols,pver) ! dummy in-cloud nc ! SMB
   call outfld('FRZRDT',      frzrdt ,     psetcols, lchnk, avg_subcol_field=use_subcol_microp)
   call outfld('FICE',        nfice,       psetcols, lchnk, avg_subcol_field=use_subcol_microp)
 
-!!!! SMB diagnostic output 20140723
+!!!! SMB diagnostic output 20140801
   call outfld('NCIC',        ncic_mg1,        pcols, lchnk)
+  call outfld('RHO_MG',      rho_mg1,         pcols, lchnk)
+  call outfld('DUMC',        dumc_mg1,        pcols, lchnk)
   call outfld('DUMNC',       dumnc_mg1,       pcols, lchnk)
-!  call outfld('PGAM_MP',     pgam_mg1,        psetcols, lchnk, avg_subcol_field=use_subcol_microp)
-!  call outfld('LAMC_MP',     lamc_mg1,        psetcols, lchnk, avg_subcol_field=use_subcol_microp)
-  call outfld('PGAM_MP',     mu,             pcols, lchnk, avg_subcol_field=use_subcol_microp)
-  call outfld('LAMC_MP',     lambdac,        pcols, lchnk)
-!!!! END SMB diagnostic output 20140723
+  call outfld('PGAM_MP',     mu,              pcols, lchnk)
+  call outfld('LAMC_MP',     lambdac,         pcols, lchnk)
+!!!! END SMB diagnostic output 20140801
 
   ! Example subcolumn outfld call
   if (use_subcol_microp) then
