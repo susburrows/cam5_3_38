@@ -651,6 +651,7 @@ subroutine micro_mg_cam_init(pbuf2d)
 !!!! SMB diagnostic output 20140801
   call addfld ('NCIC    ', 'm-3     ', pver, 'A', 'ncic from microphysics'      ,phys_decomp)
   call addfld ('RHO_MG  ', 'kg mol-1', pver, 'A', 'rho from microphysics'      ,phys_decomp)
+  call addfld ('ICWMRST_MG', 'kg mol-1', pver, 'A', 'stratus cloud fraction from microphysics'     ,phys_decomp)
   call addfld ('DUMC    ', 'm-3     ', pver, 'A', 'dumc from microphysics'      ,phys_decomp)
   call addfld ('DUMNC   ', 'm-3     ', pver, 'A', 'dumnc from microphysics'     ,phys_decomp)
   call addfld ('PGAM_MP ', 'm-3     ', pver, 'A', 'pgamrad from microphysics'   ,phys_decomp)
@@ -982,6 +983,7 @@ subroutine micro_mg_cam_tend(state, ptend, dtime, pbuf)
 
   real(r8) :: icimrst(state%psetcols,pver)                     ! In stratus ice mixing ratio
   real(r8) :: icwmrst(state%psetcols,pver)                     ! In stratus water mixing ratio
+  real(r8) :: icwmrst_mg1(state%psetcols,pver)                     ! In stratus water mixing ratio !SMB
   real(r8) :: icinc(state%psetcols,pver)                       ! In cloud ice number conc
   real(r8) :: icwnc(state%psetcols,pver)                       ! In cloud water number conc
 
@@ -1718,6 +1720,12 @@ subroutine micro_mg_cam_tend(state, ptend, dtime, pbuf)
      ncic_grid=ncic
   endif
 
+! SMB+
+  ncic_mg1 = ncic_grid
+  icwmrst_mg1 = icwmrst_grid
+  rho_mg1 = rho_grid
+! SMB-
+
   call size_dist_param_liq(mg_liq_props, icwmrst_grid(:ngrdcol,top_lev:), &
        ncic_grid(:ngrdcol,top_lev:), rho_grid(:ngrdcol,top_lev:), &
        mu_grid(:ngrdcol,top_lev:), lambdac_grid(:ngrdcol,top_lev:))
@@ -2051,11 +2059,16 @@ subroutine micro_mg_cam_tend(state, ptend, dtime, pbuf)
 
 !!!! SMB diagnostic output 20140801
   call outfld('NCIC',        ncic_mg1,        pcols, lchnk)
+!  call outfld('NCIC',        ncic_grid,        pcols, lchnk)
   call outfld('RHO_MG',      rho_mg1,         pcols, lchnk)
-  call outfld('DUMC',        dumc_mg1,        pcols, lchnk)
-  call outfld('DUMNC',       dumnc_mg1,       pcols, lchnk)
-  call outfld('PGAM_MP',     mu,              pcols, lchnk)
-  call outfld('LAMC_MP',     lambdac,         pcols, lchnk)
+!  call outfld('RHO_MG',      rho_grid,         pcols, lchnk)
+  call outfld('ICWMRST_MG',  icwmrst_mg1,      pcols, lchnk)
+  call outfld('DUMC',        dumc_mg1,         pcols, lchnk)
+  call outfld('DUMNC',       dumnc_mg1,        pcols, lchnk)
+!  call outfld('PGAM_MP',     mu,              pcols, lchnk)
+  call outfld('PGAM_MP',     mu_grid,          pcols, lchnk)
+!  call outfld('LAMC_MP',     lambdac,     pcols, lchnk)
+  call outfld('LAMC_MP',     lambdac_grid,     pcols, lchnk)
 !!!! END SMB diagnostic output 20140801
 
   ! Example subcolumn outfld call

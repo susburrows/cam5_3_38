@@ -3243,10 +3243,9 @@ do i=1,ncol
       ! cloud droplet effective radius
 
 !!!! SMB diagnostic output 20140801
-      ncic_mg1 = ncic
-      dumnc_mg1 = dumnc
-      dumc_mg1 = dumc
-      rho_mg1 = rho
+   ncic_mg1(i,k) = ncic(i,k)
+   dumc_mg1(i,k) = dumc(i,k)
+   rho_mg1(i,k) = rho(i,k)
 !!!! END SMB diagnostic output 20140801
 
       if (dumc(i,k).ge.qsmall) then
@@ -3310,6 +3309,7 @@ do i=1,ncol
          deffi(i,k)=effi(i,k) * 2._r8
       end if
 
+      dumnc_mg1(i,k) = dumnc(i,k) ! SMB+ 20140801
 
 !!! recalculate effective radius for constant number, in order to separate
       ! first and second indirect effects
