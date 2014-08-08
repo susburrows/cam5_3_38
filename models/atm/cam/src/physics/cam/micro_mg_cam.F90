@@ -650,12 +650,17 @@ subroutine micro_mg_cam_init(pbuf2d)
 
 !!!! SMB diagnostic output 20140801
   call addfld ('NCIC    ', 'm-3     ', pver, 'A', 'ncic from microphysics'      ,phys_decomp)
+  call addfld ('NCIC_GRD', 'm-3     ', pver, 'A', 'ncic from microphysics'      ,phys_decomp)
   call addfld ('RHO_MG  ', 'kg mol-1', pver, 'A', 'rho from microphysics'      ,phys_decomp)
-  call addfld ('ICWMRST_MG', 'kg mol-1', pver, 'A', 'stratus cloud fraction from microphysics'     ,phys_decomp)
+  call addfld ('RHO_GRD ', 'kg mol-1', pver, 'A', 'rho from microphysics'      ,phys_decomp)
+  call addfld ('ICWMRST_MG', 'kg mol-1', pver, 'A', 'in-stratus cloud water mixing ratio from microphysics'     ,phys_decomp)
+  call addfld ('AST_MG', 'kg mol-1', pver, 'A', 'stratus cloud fraction from microphysics'     ,phys_decomp)
   call addfld ('DUMC    ', 'm-3     ', pver, 'A', 'dumc from microphysics'      ,phys_decomp)
   call addfld ('DUMNC   ', 'm-3     ', pver, 'A', 'dumnc from microphysics'     ,phys_decomp)
-  call addfld ('PGAM_MP ', 'm-3     ', pver, 'A', 'pgamrad from microphysics'   ,phys_decomp)
-  call addfld ('LAMC_MP ', 'm-3     ', pver, 'A', 'lamcrad from microphysics'   ,phys_decomp)
+  call addfld ('MU_GRD_I', '     ', pver, 'A', 'intermediate value of mu_grid from microphysics'   ,phys_decomp)
+  call addfld ('L_GRD_I', '     ', pver, 'A', 'intermediate value of lambdac_grid from microphysics'   ,phys_decomp)
+  call addfld ('PGAM_MP ', '     ', pver, 'A', 'pgamrad from microphysics'   ,phys_decomp)
+  call addfld ('LAMC_MP ', '     ', pver, 'A', 'lamcrad from microphysics'   ,phys_decomp)
 !!!! END SMB diagnostic output 20140801
 
   ! determine the add_default fields
@@ -983,7 +988,6 @@ subroutine micro_mg_cam_tend(state, ptend, dtime, pbuf)
 
   real(r8) :: icimrst(state%psetcols,pver)                     ! In stratus ice mixing ratio
   real(r8) :: icwmrst(state%psetcols,pver)                     ! In stratus water mixing ratio
-  real(r8) :: icwmrst_mg1(state%psetcols,pver)                     ! In stratus water mixing ratio !SMB
   real(r8) :: icinc(state%psetcols,pver)                       ! In cloud ice number conc
   real(r8) :: icwnc(state%psetcols,pver)                       ! In cloud water number conc
 
@@ -1125,7 +1129,13 @@ subroutine micro_mg_cam_tend(state, ptend, dtime, pbuf)
   real(r8),pointer :: nsout_grid_ptr(:,:)
 
 !!!! SMB diagnostic output 20140801
+  real(r8) :: icwmrst_mg1(pcols,pver)                      ! In stratus water mixing ratio !SMB
+  real(r8) :: ast_mg1(pcols,pver)
+  real(r8) :: mu_grid_int(pcols,pver)
+  real(r8) :: lambdac_grid_int(pcols,pver)
+  real(r8) :: ncic_grid_mg1(pcols,pver)  ! in-cloud droplet number conc
   real(r8) :: ncic_mg1(pcols,pver)  ! in-cloud droplet number conc
+  real(r8) :: rho_grid_mg1(pcols,pver)   ! rho from mg1
   real(r8) :: rho_mg1(pcols,pver)   ! rho from mg1
   real(r8) :: dumc_mg1(pcols,pver)  ! dummy in-cloud cld liq wat
   real(r8) :: dumnc_mg1(pcols,pver) ! dummy in-cloud nc
@@ -1721,9 +1731,9 @@ subroutine micro_mg_cam_tend(state, ptend, dtime, pbuf)
   endif
 
 ! SMB+
-  ncic_mg1 = ncic_grid
+  ncic_grid_mg1 = ncic_grid
   icwmrst_mg1 = icwmrst_grid
-  rho_mg1 = rho_grid
+  rho_grid_mg1 = rho_grid
 ! SMB-
 
   call size_dist_param_liq(mg_liq_props, icwmrst_grid(:ngrdcol,top_lev:), &
@@ -1739,6 +1749,11 @@ subroutine micro_mg_cam_tend(state, ptend, dtime, pbuf)
      ! there is no cloud.
      mu_grid(:ngrdcol,top_lev:) = 0._r8
   end where
+
+! SMB+
+  mu_grid_int = mu_grid
+  lambdac_grid_int = lambdac_grid
+! SMB-
 
   ! Rain/Snow effective diameter.
   ! Note -- These five fields are calculated in micro_mg_tend but are overwritten here
@@ -1797,6 +1812,7 @@ subroutine micro_mg_cam_tend(state, ptend, dtime, pbuf)
 
   dei_grid = rei_grid * rhoi/rhows * 2._r8
 
+  ast_mg1 = ast_grid ! SMB+
 
   ! Limiters for low cloud fraction.
   do k = top_lev, pver
@@ -2059,15 +2075,16 @@ subroutine micro_mg_cam_tend(state, ptend, dtime, pbuf)
 
 !!!! SMB diagnostic output 20140801
   call outfld('NCIC',        ncic_mg1,        pcols, lchnk)
-!  call outfld('NCIC',        ncic_grid,        pcols, lchnk)
+  call outfld('NCIC_GRD', ncic_grid_mg1,        pcols, lchnk)
   call outfld('RHO_MG',      rho_mg1,         pcols, lchnk)
-!  call outfld('RHO_MG',      rho_grid,         pcols, lchnk)
+  call outfld('RHO_GRD', rho_grid_mg1,         pcols, lchnk)
+  call outfld('AST_MG',  ast_mg1,      pcols, lchnk)
   call outfld('ICWMRST_MG',  icwmrst_mg1,      pcols, lchnk)
   call outfld('DUMC',        dumc_mg1,         pcols, lchnk)
   call outfld('DUMNC',       dumnc_mg1,        pcols, lchnk)
-!  call outfld('PGAM_MP',     mu,              pcols, lchnk)
+  call outfld('MU_GRD_I',    mu_grid_int,      pcols, lchnk)
+  call outfld('L_GRD_I',     lambdac_grid_int, pcols, lchnk)
   call outfld('PGAM_MP',     mu_grid,          pcols, lchnk)
-!  call outfld('LAMC_MP',     lambdac,     pcols, lchnk)
   call outfld('LAMC_MP',     lambdac_grid,     pcols, lchnk)
 !!!! END SMB diagnostic output 20140801
 
