@@ -26,3 +26,23 @@ uwshcu.o: uwshcu.F90
 
 wetdep.o: wetdep.F90
 		      $(FC) -c $(INCLDIR) $(INCS) $(FFLAGS) $(FREEFLAGS)  -O3  -no-prec-div  $<
+
+# Discuss CESM Forums (19 Sep 2014)
+#
+# (Bugzilla 2406) - All versions of CESM are not currently supported with the
+# Intel 14.x compiler. This known issue is posted for users wishing to port to
+# their own platform using the Intel 14.x compiler.
+#
+# Compiling the file dynamics/fv/spmd_dyn.F90 at the default -O2 optimization
+# level using the intel 14.0.2 causes a runtime error at initialization.
+#
+# Reducing the optimization to -O1 solves the problem. You can do this by
+# adding the following to the file Depends.intel in the case directory or the
+# Machines directory:
+
+ifeq ($(CAM_DYCORE),fv) then
+NOOPTOBJS = spmd_dyn.o
+
+$(NOOPTOBJS): %.o: %.F90
+$(FC) -c $(INCLDIR) $(INCS) $(FFLAGS) $(FREEFLAGS) -O1 $<
+endif
