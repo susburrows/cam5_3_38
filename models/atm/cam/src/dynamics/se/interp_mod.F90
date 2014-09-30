@@ -442,7 +442,7 @@ contains
              do j=1,np
                 do i=1,np
                    dest(i,j,1,k,1) = fldu(i+(j-1)*np,k,ie)
-                   dest(i,j,1,k,1) = fldv(i+(j-1)*np,k,ie)
+                   dest(i,j,2,k,1) = fldv(i+(j-1)*np,k,ie)
                 end do
              end do
           end do
