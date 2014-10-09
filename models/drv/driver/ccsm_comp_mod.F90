@@ -184,6 +184,7 @@ module ccsm_comp_mod
    type(mct_aVect) , pointer :: o2x_ax(:)
    type(mct_aVect) , pointer :: xao_ox(:)
    type(mct_aVect) , pointer :: xao_ax(:)
+   logical :: is_defined_xao_ax =.false.
 
    character(len=CL) :: suffix
    logical           :: iamin_id 
@@ -1674,6 +1675,7 @@ subroutine ccsm_init()
          if (lnd_present .or. ocn_present) then
             ! Merge input to atmosphere on coupler pes
             xao_ax => prep_aoflux_get_xao_ax()
+            is_defined_xao_ax=.true.
             if (associated(xao_ax)) then  
                call  prep_atm_mrg(infodata, &
                     fractions_ax=fractions_ax, xao_ax=xao_ax, timer_mrg='driver_init_atminit')
@@ -2368,6 +2370,7 @@ end subroutine ccsm_init
 
             else if (trim(aoflux_grid) == 'exch') then
                xao_ax   => prep_aoflux_get_xao_ax()
+               is_defined_xao_ax=.true.
                xao_ox   => prep_aoflux_get_xao_ox()
 
                call t_drvstartf ('driver_atmocnp_fluxe',barrier=mpicom_CPLID)
@@ -2646,6 +2649,7 @@ end subroutine ccsm_init
                   efi = mod((exi-1),num_inst_frc) + 1
 
                   xao_ax => prep_aoflux_get_xao_ax() ! array over all instances
+                  is_defined_xao_ax=.true.
                   o2x_ax => prep_atm_get_o2x_ax()    ! array over all instances
                   call seq_flux_atmocn_mct(infodata, atm(ens1), o2x_ax(emi), 'atm', xao_ax(exi))
 
@@ -2703,7 +2707,7 @@ end subroutine ccsm_init
             end if
 
             ! Merge inputs to atm 
-            if (associated(xao_ax)) then  
+            if (is_defined_xao_ax) then  
                call prep_atm_mrg(infodata, fractions_ax, xao_ax=xao_ax, timer_mrg='driver_atmprep_mrgx2a') 
             end if
 
