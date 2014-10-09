@@ -212,8 +212,8 @@
 !      real(kind=r8), intent(out) :: pvsfd(:)
 !      real(kind=r8), intent(out) :: pvsfu(:)
 
-      real(kind=r8), intent(out)  :: pbbfsu(:,:)                 ! shortwave spectral flux up (nswbands,nlayers+1)
-      real(kind=r8), intent(out)  :: pbbfsd(:,:)                 ! shortwave spectral flux down (nswbands,nlayers+1)
+      real(kind=r8), intent(inout)  :: pbbfsu(:,:)                 ! shortwave spectral flux up (nswbands,nlayers+1)
+      real(kind=r8), intent(inout)  :: pbbfsd(:,:)                 ! shortwave spectral flux down (nswbands,nlayers+1)
 
 
 ! ------- Local -------
