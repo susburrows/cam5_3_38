@@ -1107,9 +1107,11 @@ contains
       ! Diagnostic -- SMB
       do i = 1, ncol
          do k = top_lev, pver
-            if (mass(i,k,c) .lt. -1.e-12) then
-               write(iulog,*) 'radname= ', radname, ' mass=', mass(i,k,c), ' i=', i, ' k=', k
-            end if
+	     do c = begchunk,endchunk
+                if (mass(i,k,c) .lt. -1.e-12) then
+             	  write(iulog,*) 'radname= ', radname, ' mass=', mass(i,k,c), ' i=', i, ' k=', k
+            	end if
+             end do
          end do
       end do
       ! End diagnostic -- SMB
