@@ -546,6 +546,12 @@ subroutine modal_aero_sw(list_idx, state, pbuf, nnite, idxnite, &
                   vol(i)      = specmmr(i,k)/specdens
                   dryvol(i)   = dryvol(i) + vol(i)
                   crefin(i)   = crefin(i) + vol(i)*specrefindex(isw)
+                  ! Debugging -- SMB
+                  if (dryvol(i).lt.-1.e-12) then
+                     write(iulog,*) trim(spectype), ' specdens=', specdens, ' dryvol=', dryvol(i)
+                     write(iulog,*) trim(spectype), ' specmmr=', specmmr(i,k), ' vol=', vol(i)
+                  end if
+                  ! End SMB
                end do
 
                ! compute some diagnostics for visible band only

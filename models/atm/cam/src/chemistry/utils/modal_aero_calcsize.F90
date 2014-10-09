@@ -1222,6 +1222,8 @@ subroutine modal_aero_calcsize_diag(state, pbuf, list_idx_in, dgnum_m)
    real(r8) :: voltonumbhi, voltonumblo
    real(r8) :: v2nyy, v2nxx           ! voltonumblo/hi of current mode
    real(r8) :: sigmag, alnsg
+   ! Diagnostic SMB
+   character*32         :: spectype            ! species type
    !-----------------------------------------------------------------------
 
    lchnk = state%lchnk
@@ -1267,7 +1269,9 @@ subroutine modal_aero_calcsize_diag(state, pbuf, list_idx_in, dgnum_m)
       do l1 = 1, nspec
 
          call rad_cnst_get_aer_mmr(list_idx, n, l1, 'a', state, pbuf, specmmr)
-         call rad_cnst_get_aer_props(list_idx, n, l1, density_aer=specdens)
+!         call rad_cnst_get_aer_props(list_idx, n, l1, density_aer=specdens)
+! Diagnostic SMB
+         call rad_cnst_get_aer_props(list_idx, n, l1, density_aer=specdens, spectype=spectype)
 
          ! need qmass*dummwdens = (kg/kg-air) * [1/(kg/m3)] = m3/kg-air
          dummwdens = 1.0_r8 / specdens
@@ -1276,6 +1280,12 @@ subroutine modal_aero_calcsize_diag(state, pbuf, list_idx_in, dgnum_m)
             do i=1,ncol
                dryvol_a(i,k) = dryvol_a(i,k)    &
                   + max(0.0_r8, specmmr(i,k))*dummwdens
+                  ! Debugging -- SMB
+                  if (dryvol_a(i,k).lt.-1.e-12) then
+                     write(iulog,*) trim(spectype), ' specdens=', specdens, ' dryvol_a=', dryvol_a(i,k)
+                     write(iulog,*) trim(spectype), ' specmmr=', specmmr(i,k)
+                  end if
+                  ! End SMB
             end do
          end do
       end do

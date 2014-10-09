@@ -27,6 +27,9 @@ use error_messages, only: alloc_err
 use abortutils,     only: endrun
 use cam_logfile,    only: iulog
 
+! Diagnostic - SMB
+use ref_pres,          only: top_lev => clim_modal_aero_top_lev
+
 implicit none
 private
 save
@@ -1678,6 +1681,8 @@ subroutine rad_cnst_get_aer_mmr_by_idx(list_idx, aer_idx, state, pbuf, mmr)
    type(physics_state), target, intent(in) :: state
    type(physics_buffer_desc), pointer      :: pbuf(:)
    real(r8),                    pointer    :: mmr(:,:)
+   ! Diagnostic - SMB
+   integer :: ncol,i,k                   ! number of active columns in the chunk
 
    ! Local variables
    integer :: lchnk
@@ -1708,6 +1713,16 @@ subroutine rad_cnst_get_aer_mmr_by_idx(list_idx, aer_idx, state, pbuf, mmr)
    select case( source )
    case ('A')
       mmr => state%q(:,:,idx)
+      ! Diagnostic -- SMB
+      ncol  = state%ncol
+      do i = 1, ncol
+         do k = top_lev, pver
+            if (mmr(i,k) .lt. -1.e-12) then
+               write(iulog,*) subname//': aer_idx= ', aer_idx, ' mmr=', mmr(i,k)
+            end if
+         end do
+      end do
+      ! end diagnostic -- SMB
    case ('N')
       call pbuf_get_field(pbuf, idx, mmr)
    case ('Z')
@@ -1739,6 +1754,9 @@ subroutine rad_cnst_get_mam_mmr_by_idx(list_idx, mode_idx, spec_idx, phase, stat
    character(len=1) :: source
    type(modelist_t), pointer :: mlist
    character(len=*), parameter :: subname = 'rad_cnst_get_mam_mmr_by_idx'
+
+   ! Diagnostic - SMB
+   integer :: ncol,i,k                   ! number of active columns in the chunk
    !-----------------------------------------------------------------------------
 
    if (list_idx >= 0 .and. list_idx <= N_DIAG) then
@@ -1780,6 +1798,16 @@ subroutine rad_cnst_get_mam_mmr_by_idx(list_idx, mode_idx, spec_idx, phase, stat
    select case( source )
    case ('A')
       mmr => state%q(:,:,idx)
+      ! Diagnostic -- SMB
+      ncol  = state%ncol
+      do i = 1, ncol
+         do k = top_lev, pver
+            if (mmr(i,k) .lt. -1.e-12) then
+               write(iulog,*) subname//': spec_idx= ', spec_idx, 'mode_idx= ', mode_idx, ' mmr=', mmr(i,k)
+            end if
+         end do
+      end do
+      ! end diagnostic -- SMB
    case ('N')
       call pbuf_get_field(pbuf, idx, mmr)
    case ('Z')

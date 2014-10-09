@@ -184,6 +184,9 @@ subroutine modal_aero_wateruptake_dr(state, pbuf, list_idx_in, dgnumdry_m, dgnum
    real(r8) :: qs(pcols)             ! saturation specific humidity
 
    character(len=3) :: trnum       ! used to hold mode number (as characters)
+
+   ! Debugging - SMB
+   character*32         :: spectype            ! species type
    !-----------------------------------------------------------------------
 
    lchnk = state%lchnk
@@ -243,7 +246,8 @@ subroutine modal_aero_wateruptake_dr(state, pbuf, list_idx_in, dgnumdry_m, dgnum
 
          ! get species interstitial mixing ratio ('a')
          call rad_cnst_get_aer_mmr(list_idx, m, l, 'a', state, pbuf, raer)
-         call rad_cnst_get_aer_props(list_idx, m, l, density_aer=specdens, hygro_aer=spechygro)
+!         call rad_cnst_get_aer_props(list_idx, m, l, density_aer=specdens, hygro_aer=spechygro)
+         call rad_cnst_get_aer_props(list_idx, m, l, density_aer=specdens, hygro_aer=spechygro, spectype=spectype)
 
          if (l == 1) then
             ! save off these values to be used as defaults
@@ -258,6 +262,11 @@ subroutine modal_aero_wateruptake_dr(state, pbuf, list_idx_in, dgnumdry_m, dgnum
                dumb          = duma/specdens
                dryvolmr(i,k) = dryvolmr(i,k) + dumb
                hygro(i,k,m)  = hygro(i,k,m) + dumb*spechygro
+                  ! Debugging -- SMB
+                  if (dryvolmr(i,k).lt.-1.e-12) then
+                     write(iulog,*) trim(spectype), ' dryvolmr=', dryvolmr(i,k), ' i =', i, ' k =', k
+                  end if
+                  ! End SMB
             end do
          end do
       end do
