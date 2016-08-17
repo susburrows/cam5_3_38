@@ -22,20 +22,20 @@
     !
     ! definitions for aerosol chemical components
     !
-  integer, parameter ::  ntot_aspectype = 8
+  integer, parameter ::  ntot_aspectype = 9
   character(len=*),parameter ::  specname_amode(ntot_aspectype) = (/ 'sulfate   ', 'ammonium  ', 'nitrate   ', &
        'p-organic ', 's-organic ', 'black-c   ', &
-       'seasalt   ', 'dust      ' /)
+       'seasalt   ', 'dust      ', 'bacteria  ' /)
     ! set specdens_amode from physprop files via rad_cnst_get_aer_props
     !specdens_amode(:ntot_aspectype) = (/1770.0,1770.0,1770.0, 1000.0, 1000.0, 1700.0,1900.0,2600.0 /)
 
     ! rce - 06-aug-2007 - changed specmw for almost everything to match mozart
 #if ( defined MODAL_AERO_7MODE )
     real(r8), parameter :: specmw_amode(ntot_aspectype)   = (/  96.0_r8,  18.0_r8,  62.0_r8, &
-       12.0_r8,   12.0_r8,   12.0_r8,  58.5_r8, 135.0_r8 /)
+       12.0_r8,   12.0_r8,   12.0_r8,  58.5_r8, 135.0_r8, 135.0_r8 /)
 #elif ( defined MODAL_AERO_3MODE )
     real(r8), parameter :: specmw_amode(ntot_aspectype)   = (/ 115.0_r8, 115.0_r8,  62.0_r8, &
-       12.0_r8,   12.0_r8,   12.0_r8,  58.5_r8, 135.0_r8 /)
+       12.0_r8,   12.0_r8,   12.0_r8,  58.5_r8, 135.0_r8 , 135.0_r8/)
 #endif
 
 
@@ -57,9 +57,9 @@
 #endif
 
 #if ( defined MODAL_AERO_7MODE )
-    integer, parameter :: nspec_amode(ntot_amode)           = (/ 6, 4, 2, 3, 3, 3, 3 /)  ! SS
+    integer, parameter :: nspec_amode(ntot_amode)           = (/ 6, 4, 2, 3, 3, 3, 4 /)  ! SS
 #elif ( defined MODAL_AERO_3MODE )
-    integer, parameter :: nspec_amode(ntot_amode)           = (/ 6, 3, 3 /)
+    integer, parameter :: nspec_amode(ntot_amode)           = (/ 6, 3, 4 /)
 #endif
     integer, parameter :: nspec_amode_max = 6
     !   input mprognum_amode, mdiagnum_amode, mprogsfc_amode, mcalcwater_amode
@@ -139,6 +139,7 @@
           lptr_soa_a_amode(ntot_amode),  lptr_soa_cw_amode(ntot_amode), &   !
           lptr_bc_a_amode(ntot_amode),   lptr_bc_cw_amode(ntot_amode),  &   !
           lptr_nacl_a_amode(ntot_amode), lptr_nacl_cw_amode(ntot_amode),&   !
+          lptr_bac_a_amode(ntot_amode),  lptr_bac_cw_amode(ntot_amode),&   !
           lptr_dust_a_amode(ntot_amode), lptr_dust_cw_amode(ntot_amode),&   !
           modeptr_accum,  modeptr_aitken,                               &   !
           modeptr_ufine,  modeptr_coarse,                               &   !
@@ -154,6 +155,7 @@
           specmw_soa_amode,     specdens_soa_amode,       &
           specmw_bc_amode,      specdens_bc_amode,        &
           specmw_dust_amode,    specdens_dust_amode,      &
+          specmw_bac_amode,     specdens_bac_amode,      &
           specmw_seasalt_amode, specdens_seasalt_amode
 
 	integer species_class(pcnst)	! indicates species class (

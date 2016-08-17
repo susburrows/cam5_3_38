@@ -66,7 +66,7 @@ contains
             'dst_c1  ', 'ncl_c1  ' /)
        xname_spectype(:nspec_amode(1),1)  = (/ 'sulfate   ', &
             'p-organic ', 's-organic ', 'black-c   ', &
-            'dust      ', 'seasalt   ' /)
+            'dust      ' /)
 #endif
 
        ! mode 2 (aitken) species
@@ -93,9 +93,9 @@ contains
        xname_spectype(:nspec_amode(3),3)  = (/ 'p-organic ', 'black-c   ' /)
 #elif ( defined MODAL_AERO_3MODE )
        ! mode 3 (coarse dust & seasalt) species
-       xname_massptr(:nspec_amode(3),3)   = (/ 'dst_a3  ', 'ncl_a3  ', 'so4_a3  ' /)
-       xname_massptrcw(:nspec_amode(3),3) = (/ 'dst_c3  ', 'ncl_c3  ', 'so4_c3  ' /)
-       xname_spectype(:nspec_amode(3),3)  = (/ 'dust      ', 'seasalt   ', 'sulfate   ' /)
+       xname_massptr(:nspec_amode(3),3)   = (/ 'dst_a3  ', 'ncl_a3  ', 'so4_a3  ', 'bac_a3  ' /)
+       xname_massptrcw(:nspec_amode(3),3) = (/ 'dst_c3  ', 'ncl_c3  ', 'so4_c3  ', 'bac_a3  ' /)
+       xname_spectype(:nspec_amode(3),3)  = (/ 'dust      ', 'seasalt   ', 'sulfate   ', 'bacteria  ' /)
 #endif
 
 
@@ -116,9 +116,9 @@ contains
        xname_spectype(:nspec_amode(6),6)  = (/ 'seasalt   ', 'sulfate   ', 'ammonium  ' /)
 
        ! mode 7 (coarse dust) species
-       xname_massptr(:nspec_amode(7),7)   = (/ 'dst_a7  ', 'so4_a7  ', 'nh4_a7  ' /)
-       xname_massptrcw(:nspec_amode(7),7) = (/ 'dst_c7  ', 'so4_c7  ', 'nh4_c7  ' /)
-       xname_spectype(:nspec_amode(7),7)  = (/ 'dust      ', 'sulfate   ', 'ammonium  ' /)
+       xname_massptr(:nspec_amode(7),7)   = (/ 'dst_a7  ', 'so4_a7  ', 'nh4_a7  ', 'bac_a7  ' /)
+       xname_massptrcw(:nspec_amode(7),7) = (/ 'dst_c7  ', 'so4_c7  ', 'nh4_c7  ', 'bac_a7  ' /)
+       xname_spectype(:nspec_amode(7),7)  = (/ 'dust      ', 'sulfate   ', 'ammonium  ', 'bacteria  ' /)
 #endif
 
     do m = 1, ntot_amode
@@ -892,6 +892,7 @@ contains
           if (name == 'dst_a5' ) write( *, '(2a)' ) '    doing ', name
           if (name == 'ncl_a6' ) write( *, '(2a)' ) '    doing ', name
           if (name == 'dst_a7' ) write( *, '(2a)' ) '    doing ', name
+          if (name == 'bac_a7' ) write( *, '(2a)' ) '    doing ', name
        end if
 
        do k = 1, plev
@@ -914,6 +915,7 @@ contains
           if (name == 'dst_a5' ) q(:,k,:) = duma*0.5_r8
           if (name == 'ncl_a6' ) q(:,k,:) = duma*0.6_r8
           if (name == 'dst_a7' ) q(:,k,:) = duma*0.7_r8
+          if (name == 'bac_a7' ) q(:,k,:) = duma*0.7_r8
 
           ! init aerosol number
           !
