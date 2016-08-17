@@ -1027,7 +1027,6 @@ contains
     use drv_input_data,   only: drv_input_data_read
 
     ! Diagnostic - SMB
-    use ref_pres,          only: top_lev => clim_modal_aero_top_lev
     use cam_logfile,    only: iulog
     integer :: i,k
     ! End diagnostic - SMB
@@ -1048,23 +1047,24 @@ contains
     radname = 'rad_'//trim(name)
     mass = drv_input_data_read( indata, radname, 'lev', pver, recno )
 
+    ! Diagnostic -- SMB
+      do i = 1,pcols
+         do k = 1, pver
+	   do c = begchunk, endchunk
+             if (mass(i,k,c) .lt. -1.e-12) then
+               write(iulog,*) 'radname= ', radname, ' mass=', mass(i,k,c), ' i=', i, ' k=', k
+             end if
+	   end do
+         end do
+      end do
+    ! End diagnostic -- SMB
+
     do c = begchunk,endchunk
        ncol = state(c)%ncol
        phys_buffer_chunk => pbuf_get_chunk(pbuf2d, c)
        call rad_cnst_get_aer_mmr(0, idx, state(c), phys_buffer_chunk, mmr_ptr)
        mmr_ptr(:ncol,:) = mass(:ncol,:,c)
     enddo
-
-      ! Diagnostic -- SMB
-      do i = 1, ncol
-         do k = top_lev, pver
-            if (mass(i,k,c) .lt. -1.e-12) then
-               write(iulog,*) 'radname= ', radname, ' mass=', mass(i,k,c), ' i=', i, ' k=', k
-            end if
-         end do
-      end do
-      ! End diagnostic -- SMB
-
 
   end subroutine read_rad_aer_data
 
