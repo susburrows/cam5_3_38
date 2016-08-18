@@ -916,11 +916,11 @@ contains
     integer :: jnv ! index for scavcoefnv 3rd dimension
     integer :: lphase ! index for interstitial / cloudborne aerosol
     integer :: lspec ! index for aerosol number / chem-mass / water-mass
-    integer :: lcoardust, lcoarnacl ! indices for coarse mode dust and seasalt masses
+    integer :: lcoardust, lcoarbac, lcoarnacl ! indices for coarse mode dust and seasalt masses
     real(r8) :: dqdt_tmp(pcols,pver) ! temporary array to hold tendency for 1 species
     real(r8) :: f_act_conv(pcols,pver) ! prescribed aerosol activation fraction for convective cloud ! rce 2010/05/01
     real(r8) :: f_act_conv_coarse(pcols,pver) ! similar but for coarse mode ! rce 2010/05/02
-    real(r8) :: f_act_conv_coarse_dust, f_act_conv_coarse_nacl ! rce 2010/05/02
+    real(r8) :: f_act_conv_coarse_dust, f_act_conv_coarse_bac, f_act_conv_coarse_nacl ! rce 2010/05/02 ; smb 2016/08/18
     real(r8) :: fracis_cw(pcols,pver)
     real(r8) :: hygro_sum_old(pcols,pver) ! before removal [sum of (mass*hydro/dens)]
     real(r8) :: hygro_sum_del(pcols,pver) ! removal change to [sum of (mass*hydro/dens)]
@@ -931,7 +931,7 @@ contains
                                            ! cloud-borne num & vol (0),
                                            ! interstitial num (1), interstitial vol (2)
     real(r8) :: tmpa, tmpb
-    real(r8) :: tmpdust, tmpnacl
+    real(r8) :: tmpdust, tmpbac, tmpnacl
     real(r8) :: water_old, water_new ! temporary old/new aerosol water mix-rat
     logical  :: isprx(pcols,pver) ! true if precipation
     real(r8) :: aerdepwetis(pcols,pcnst) ! aerosol wet deposition (interstitial)
@@ -990,16 +990,18 @@ contains
     f_act_conv_coarse_nacl = 0.80_r8 ! rce 2010/05/02
     if (modeptr_coarse > 0) then
        lcoardust = lptr_dust_a_amode(modeptr_coarse)
+       lcoarbac  = lptr_bac_a_amode(modeptr_coarse)
        lcoarnacl = lptr_nacl_a_amode(modeptr_coarse)
        if ((lcoardust > 0) .and. (lcoarnacl > 0)) then
           do k = 1, pver
              do i = 1, ncol
                 tmpdust = max( 0.0_r8, state%q(i,k,lcoardust) + ptend%q(i,k,lcoardust)*dt )
+		tmpbac  = max( 0.0_r8, state%q(i,k,lcoardust) + ptend%q(i,k,lcoarbac)*dt )
                 tmpnacl = max( 0.0_r8, state%q(i,k,lcoarnacl) + ptend%q(i,k,lcoarnacl)*dt )
-                if ((tmpdust+tmpnacl) > 1.0e-30_r8) then
-                   ! sol_factic_coarse(i,k) = (0.2_r8*tmpdust + 0.4_r8*tmpnacl)/(tmpdust+tmpnacl) ! tuned 1/6
-                   f_act_conv_coarse(i,k) = (f_act_conv_coarse_dust*tmpdust &
-                        + f_act_conv_coarse_nacl*tmpnacl)/(tmpdust+tmpnacl) ! rce 2010/05/02
+                if ((tmpdust+tmpnacl+tmpbac) > 1.0e-30_r8) then
+                   ! sol_factic_coarse(i,k) = (0.2_r8*tmpdust + 0.2_r8*tmpbac + 0.4_r8*tmpnacl)/(tmpdust+tmpbac+tmpnacl) ! tuned 1/6
+                   f_act_conv_coarse(i,k) = (f_act_conv_coarse_dust*tmpdust + f_act_conv_coarse_bac*tmpbac &
+                        + f_act_conv_coarse_nacl*tmpnacl)/(tmpdust+tmpbac+tmpnacl) ! rce 2010/05/02
                 end if
              end do
           end do
@@ -1118,6 +1120,9 @@ contains
                    if (lmassptr_amode(lspec,m) == lptr_dust_a_amode(m)) then
                       ! sol_factic = 0.2_r8 ! tuned 1/4
                       f_act_conv = f_act_conv_coarse_dust ! rce 2010/05/02
+                   else if (lmassptr_amode(lspec,m) == lptr_bac_a_amode(m)) then
+                      ! sol_factic = 0.2_r8 ! tuned 1/4
+                      f_act_conv = f_act_conv_coarse_bac ! smb 2016/08/18
                    else if (lmassptr_amode(lspec,m) == lptr_nacl_a_amode(m)) then
                       ! sol_factic = 0.4_r8 ! tuned 1/6
                       f_act_conv = f_act_conv_coarse_nacl ! rce 2010/05/02
