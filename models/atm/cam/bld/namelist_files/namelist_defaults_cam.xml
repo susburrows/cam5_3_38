@@ -263,6 +263,7 @@
 <mam_dst_a3  rad="rrtmg">atm/cam/physprops/dust4_rrtmg_c090521.nc</mam_dst_a3>
 <mam_ncl_a3  rad="rrtmg">atm/cam/physprops/ssam_rrtmg_c100508.nc</mam_ncl_a3>
 <mam_so4_a3  rad="rrtmg">atm/cam/physprops/sulfate_rrtmg_c080918.nc</mam_so4_a3>
+<mam_bac_a3  rad="rrtmg">atm/cam/physprops/dust4_rrtmg_c090521.nc</mam_bac_a3>
 
 <!-- 7 mode -->
 <mam_dst_a5  rad="rrtmg">atm/cam/physprops/dust4_rrtmg_c090521.nc</mam_dst_a5>
@@ -281,6 +282,7 @@
 <mam_nh4_a6  rad="rrtmg">atm/cam/physprops/sulfate_rrtmg_c080918.nc</mam_nh4_a6>
 <mam_nh4_a7  rad="rrtmg">atm/cam/physprops/sulfate_rrtmg_c080918.nc</mam_nh4_a7>
 <mam_bc_a3   rad="rrtmg">atm/cam/physprops/bcpho_rrtmg_c100508.nc</mam_bc_a3>
+<mam_bac_a7  rad="rrtmg">atm/cam/physprops/dust4_rrtmg_c090521.nc</mam_bac_a7>
 
 <!-- Eruptive volcanic aerosols  -->
 <VOLC_MMR rad="camrt">atm/cam/physprops/sulfuricacid_cam3_c080918.nc</VOLC_MMR>
@@ -354,6 +356,17 @@
 <prescribed_aero_type      aer_model='mam'  >CYCLICAL</prescribed_aero_type>
 <prescribed_aero_cycle_yr  aer_model='mam'  >2000</prescribed_aero_cycle_yr>
 <prescribed_aero_filelist  aer_model='mam'  >aero_1.9x2.5_L26_list_c070514.txt</prescribed_aero_filelist>
+
+<!-- Bacterial aerosol emissions -->
+<bacteria_specifier   >'bac_flx:bacteria_flux'</bacteria_specifier>
+<bacteria_filename    >bacteria_emis_scaled_date.nc</bacteria_filename>
+<bacteria_filelist    ></bacteria_filelist>
+<bacteria_datapath    >/dtemp/burr114/projects/microbiome/Burrows2009_bacteria</bacteria_datapath>
+<bacteria_datatype    >FIXED</bacteria_datatype>
+<bacteria_cycle_yr    >1</bacteria_cycle_yr>
+<bacteria_rmv_file    >.false.</bacteria_rmv_file>
+<bacteria_fixed_ymd   >10723</bacteria_fixed_ymd>
+<bacteria_fixed_tod   >0</bacteria_fixed_tod>
 
 <!-- aerosol deposition (2000 climatology) -->
 <aerodep_flx_datapath  aer_model='bam'  >atm/cam/chem/trop_mozart_aero/aero</aerodep_flx_datapath>

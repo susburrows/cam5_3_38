@@ -1064,17 +1064,17 @@ if ($aer_model eq 'mam' ) {
     @mode_spec     = (
 	[qw(so4_a1 pom_a1 soa_a1 bc_a1 dst_a1 ncl_a1)],
 	[qw(so4_a2 soa_a2 ncl_a2)],
-	[qw(dst_a3 ncl_a3 so4_a3)],
+	[qw(dst_a3 ncl_a3 so4_a3 bac_a3)],
 	);
     @mode_spec_type = (
 	[qw(sulfate p-organic s-organic black-c dust seasalt)],
 	[qw(sulfate s-organic seasalt)],
-	[qw(dust seasalt sulfate)],
+	[qw(dust seasalt sulfate bacteria)],
 	);
     @mode_spec_cw  = (
 	[qw(so4_c1 pom_c1 soa_c1 bc_c1 dst_c1 ncl_c1)],
 	[qw(so4_c2 soa_c2 ncl_c2)],
-	[qw(dst_c3 ncl_c3 so4_c3)],
+	[qw(dst_c3 ncl_c3 so4_c3 bac_c3)],
 	);
 
     if ($chem =~ /_mam3/) {
@@ -1082,7 +1082,7 @@ if ($aer_model eq 'mam' ) {
 	@mode_spec_src = (
 	    [qw(A A A A A A)],
 	    [qw(A A A)],
-	    [qw(A A A)],
+	    [qw(A A A A)],
 	    );
     }
     else {
@@ -1090,7 +1090,7 @@ if ($aer_model eq 'mam' ) {
 	@mode_spec_src = (
 	    [qw(N N N N N N)],
 	    [qw(N N N)],
-	    [qw(N N N)],
+	    [qw(N N N N)],
 	    );
     }
   } else { 
@@ -1115,7 +1115,7 @@ if ($aer_model eq 'mam' ) {
 	[qw(ncl_a4 so4_a4 nh4_a4)],
 	[qw(dst_a5 so4_a5 nh4_a5)],
 	[qw(ncl_a6 so4_a6 nh4_a6)],
-	[qw(dst_a7 so4_a7 nh4_a7)],
+	[qw(dst_a7 so4_a7 nh4_a7 bac_a7)],
 	);
     @mode_spec_type = (
 	[qw(sulfate ammonium p-organic s-organic black-c seasalt)],
@@ -1124,7 +1124,7 @@ if ($aer_model eq 'mam' ) {
 	[qw(seasalt sulfate ammonium)],
 	[qw(dust sulfate ammonium)],
 	[qw(seasalt sulfate ammonium)],
-	[qw(dust sulfate ammonium)],
+	[qw(dust sulfate ammonium bacteria)],
 	);
     @mode_spec_cw  = (
 	[qw(so4_c1 nh4_c1 pom_c1 soa_c1 bc_c1 ncl_c1)],
@@ -1133,7 +1133,7 @@ if ($aer_model eq 'mam' ) {
 	[qw(ncl_c4 so4_c4 nh4_c4)],
 	[qw(dst_c5 so4_c5 nh4_c5)],
 	[qw(ncl_c6 so4_c6 nh4_c6)],
-	[qw(dst_c7 so4_c7 nh4_c7)],
+	[qw(dst_c7 so4_c7 nh4_c7 bac_c7)],
 	);
 
 
@@ -1145,7 +1145,7 @@ if ($aer_model eq 'mam' ) {
 	    [qw(A A A)],
 	    [qw(A A A)],
 	    [qw(A A A)],
-	    [qw(A A A)],
+	    [qw(A A A A)],
 			);
 
   }
