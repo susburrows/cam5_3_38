@@ -94,7 +94,7 @@ contains
 #elif ( defined MODAL_AERO_3MODE )
        ! mode 3 (coarse dust & seasalt) species
        xname_massptr(:nspec_amode(3),3)   = (/ 'dst_a3  ', 'ncl_a3  ', 'so4_a3  ', 'bac_a3  ' /)
-       xname_massptrcw(:nspec_amode(3),3) = (/ 'dst_c3  ', 'ncl_c3  ', 'so4_c3  ', 'bac_a3  ' /)
+       xname_massptrcw(:nspec_amode(3),3) = (/ 'dst_c3  ', 'ncl_c3  ', 'so4_c3  ', 'bac_c3  ' /)
        xname_spectype(:nspec_amode(3),3)  = (/ 'dust      ', 'seasalt   ', 'sulfate   ', 'bacteria  ' /)
 #endif
 
@@ -117,7 +117,7 @@ contains
 
        ! mode 7 (coarse dust) species
        xname_massptr(:nspec_amode(7),7)   = (/ 'dst_a7  ', 'so4_a7  ', 'nh4_a7  ', 'bac_a7  ' /)
-       xname_massptrcw(:nspec_amode(7),7) = (/ 'dst_c7  ', 'so4_c7  ', 'nh4_c7  ', 'bac_a7  ' /)
+       xname_massptrcw(:nspec_amode(7),7) = (/ 'dst_c7  ', 'so4_c7  ', 'nh4_c7  ', 'bac_c7  ' /)
        xname_spectype(:nspec_amode(7),7)  = (/ 'dust      ', 'sulfate   ', 'ammonium  ', 'bacteria  ' /)
 #endif
 
