@@ -139,8 +139,8 @@
           lptr_soa_a_amode(ntot_amode),  lptr_soa_cw_amode(ntot_amode), &   !
           lptr_bc_a_amode(ntot_amode),   lptr_bc_cw_amode(ntot_amode),  &   !
           lptr_nacl_a_amode(ntot_amode), lptr_nacl_cw_amode(ntot_amode),&   !
-          lptr_bac_a_amode(ntot_amode),  lptr_bac_cw_amode(ntot_amode),&   !
           lptr_dust_a_amode(ntot_amode), lptr_dust_cw_amode(ntot_amode),&   !
+          lptr_bac_a_amode(ntot_amode),  lptr_bac_cw_amode(ntot_amode),&   !
           modeptr_accum,  modeptr_aitken,                               &   !
           modeptr_ufine,  modeptr_coarse,                               &   !
           modeptr_pcarbon,                                              &   !

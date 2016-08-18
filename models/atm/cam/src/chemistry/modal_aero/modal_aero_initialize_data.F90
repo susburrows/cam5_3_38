@@ -573,6 +573,8 @@ contains
           lptr_nacl_cw_amode(m) = init_val
           lptr_dust_a_amode(m)  = init_val
           lptr_dust_cw_amode(m) = init_val
+          lptr_bac_a_amode(m)  = init_val
+          lptr_bac_cw_amode(m) = init_val
           do l = 1, nspec_amode(m)
              l2 = lspectype_amode(l,m)
              if ( (specname_amode(l2) .eq. 'sulfate') .and.  &
@@ -619,6 +621,11 @@ contains
                   (lptr_dust_a_amode(m) .le. 0) ) then
                 lptr_dust_a_amode(m)  = lmassptr_amode(l,m)
                 lptr_dust_cw_amode(m) = lmassptrcw_amode(l,m)
+             end if
+             if ( (specname_amode(l2) .eq. 'bacteria') .and.     &
+                  (lptr_bac_a_amode(m) .le. 0) ) then
+                lptr_bac_a_amode(m)  = lmassptr_amode(l,m)
+                lptr_bac_cw_amode(m) = lmassptrcw_amode(l,m)
              end if
           end do
        end do
@@ -736,6 +743,12 @@ contains
        do m = 1, ntot_amode
           call initaermodes_setspecptrs_write2( m,                    &
                lptr_dust_a_amode(m), lptr_dust_cw_amode(m),  'dust' )
+       end do
+
+       write(iulog,9000) 'bacteria  '
+       do m = 1, ntot_amode
+          call initaermodes_setspecptrs_write2( m,                    &
+               lptr_bac_a_amode(m), lptr_bac_cw_amode(m),  'bac' )
        end do
 
 9000   format( a )
