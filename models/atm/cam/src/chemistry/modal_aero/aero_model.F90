@@ -153,6 +153,7 @@ contains
     use modal_aero_initialize_data, only: modal_aero_initialize
     use rad_constituents,           only: rad_cnst_get_info
     use dust_model,      only: dust_init, dust_names, dust_active, dust_nbin, dust_nnum
+    use bacteria_model,  only: bacteria_init, bacteria_names, bacteria_active, bacteria_nbin, bacteria_nnum
     use seasalt_model,   only: seasalt_init, seasalt_names, seasalt_active,seasalt_nbin
     use drydep_mod,      only: inidrydep
     use wetdep,          only: wetdep_init
@@ -184,6 +185,7 @@ contains
     call modal_aero_bcscavcoef_init()
 
     call dust_init()
+    call bacteria_init()
     call seasalt_init()
     call wetdep_init()
 
@@ -274,6 +276,18 @@ contains
        if (history_aerosol) then
           call add_default (dummy, 1, ' ')
        endif
+
+    endif
+
+    if (bacteria_active) then
+
+       do m = 1, bacteria_nbin
+          dummy = trim(bacteria_names(m)) // 'SF'
+          call addfld (dummy,'kg/m2/s ',1, 'A',trim(bacteria_names(m))//' bacteria surface emission',phys_decomp)
+          if (history_aerosol) then
+             call add_default (dummy, 1, ' ')
+          endif
+       enddo
 
     endif
 
@@ -504,6 +518,7 @@ contains
     index_tot_mass(3,1) = get_spc_ndx('dst_a3')
     index_tot_mass(3,2) = get_spc_ndx('ncl_a3')
     index_tot_mass(3,3) = get_spc_ndx('so4_a3')
+    index_tot_mass(3,4) = get_spc_ndx('bac_a3')
     index_chm_mass(3,1) = get_spc_ndx('so4_a3')
     !
 #endif
@@ -563,6 +578,7 @@ contains
     index_tot_mass(7,1) = get_spc_ndx('so4_a7')
     index_tot_mass(7,2) = get_spc_ndx('nh4_a7')
     index_tot_mass(7,3) = get_spc_ndx('dst_a7')
+    index_tot_mass(7,3) = get_spc_ndx('bac_a7')
     index_chm_mass(7,1) = get_spc_ndx('so4_a7')
     index_chm_mass(7,2) = get_spc_ndx('nh4_a7')
     !
@@ -1571,6 +1587,7 @@ contains
   subroutine aero_model_emissions( state, cam_in )
     use seasalt_model, only: seasalt_emis, seasalt_names, seasalt_indices, seasalt_active,seasalt_nbin
     use dust_model,    only: dust_emis, dust_names, dust_indices, dust_active,dust_nbin, dust_nnum
+    use bacteria_model, only: bacteria_emis, bacteria_names, bacteria_indices, bacteria_active, bacteria_nbin, bacteria_nnum
     use physics_types, only: physics_state
 
     ! Arguments:
@@ -1603,6 +1620,20 @@ contains
        enddo
        call outfld('DSTSFMBL',sflx(:),pcols,lchnk)
        call outfld('LND_MBL',soil_erod_tmp(:),pcols, lchnk )
+    endif
+
+    if (bacteria_active) then
+
+       call bacteria_emis( state, cam_in )
+
+       ! some bacteria emis diagnostics ...
+       sflx(:)=0._r8
+       do m=1,bacteria_nbin+bacteria_nnum
+          mm = bacteria_indices(m)
+          if (m<=bacteria_nbin) sflx(:ncol)=sflx(:ncol)+cam_in%cflx(:ncol,mm)
+          call outfld(trim(bacteria_names(m))//'SF',cam_in%cflx(:,mm),pcols, lchnk)
+       enddo
+       call outfld('BACSFMBL',sflx(:),pcols,lchnk)
     endif
 
     if (seasalt_active) then

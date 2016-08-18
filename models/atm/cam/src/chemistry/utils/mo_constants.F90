@@ -33,6 +33,7 @@ module mo_constants
 
   real(r8), parameter :: seasalt_density = 2.2e+3_r8        ! [kg m-3] Aerosol density
   real(r8), parameter :: dust_density    = 2.5e+3_r8        ! [kg m-3] Aerosol density
+  real(r8), parameter :: bacteria_density  = 1.0e+3_r8      ! [kg m-3] Aerosol density
 contains
 
   subroutine mo_constants_inti

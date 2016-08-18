@@ -66,7 +66,7 @@ contains
             'dst_c1  ', 'ncl_c1  ' /)
        xname_spectype(:nspec_amode(1),1)  = (/ 'sulfate   ', &
             'p-organic ', 's-organic ', 'black-c   ', &
-            'dust      ' /)
+            'dust      ', 'seasalt   ' /)
 #endif
 
        ! mode 2 (aitken) species
