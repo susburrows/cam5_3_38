@@ -1,5 +1,14 @@
   
   
+           |--------------------------------------------------------------------------------------------------|
+           |                                                                                                  |
+           |                                                                                                  |
+           |                    MAM7 modal aerosol chemistry with bacteria tracer added.                      |
+           |                                                                                                  |
+           |                                                                                                  |
+           |--------------------------------------------------------------------------------------------------|
+  
+  
      Solution species
       (  1)  H2O2            
       (  2)  H2SO4           
@@ -36,8 +45,9 @@
       ( 33)  num_a6             (H)
       ( 34)  dst_a7             (AlSiO5)
       ( 35)  so4_a7             (SO4)
-      ( 36)  nh4_a7             (NH4)
-      ( 37)  num_a7             (H)
+      ( 36)  bac_a7             (C)
+      ( 37)  nh4_a7             (NH4)
+      ( 38)  num_a7             (H)
   
   
      Invariant species
@@ -96,7 +106,8 @@ Class List
       ( 34)  dst_a7          
       ( 35)  so4_a7          
       ( 36)  nh4_a7          
-      ( 37)  num_a7          
+      ( 37)  bac_a7          
+      ( 38)  num_a7          
   
      Photolysis
   jh2o2            (  1)   H2O2 + hv -> (No products)                                           rate = ** User defined **         (  1)
@@ -110,15 +121,14 @@ Class List
                    (  6)   DMS + NO3 ->  SO2 + {HNO3}                                           rate = 1.90E-13*exp(    520./t)   (  7)
                    (  7)   NH3 + OH ->  H2O                                                     rate = 1.70E-12*exp(   -710./t)   (  8)
   
+Heterogeneous loss species
+  
 Extraneous prod/loss species
  ( 1)   SO2   (dataset)
  ( 2)   so4_a1   (dataset)
  ( 3)   so4_a2   (dataset)
  ( 4)   num_a1   (dataset)
  ( 5)   num_a2   (dataset)
- ( 6)   pom_a3   (dataset)
- ( 7)   bc_a3   (dataset)
- ( 8)   num_a3   (dataset)
   
   
  Equation Report
@@ -160,5 +170,6 @@ Extraneous prod/loss species
     d(num_a6)/dt = 0                                                                                                    
     d(dst_a7)/dt = 0                                                                                                    
     d(so4_a7)/dt = 0                                                                                                    
+    d(bac_a7)/dt = 0                                                                                                    
     d(nh4_a7)/dt = 0                                                                                                    
     d(num_a7)/dt = 0                                                                                                    
