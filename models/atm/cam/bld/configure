@@ -1291,7 +1291,7 @@ if (($chem_pkg ne 'none') || ($prog_species)) {
 	$chem_nadv = 15;
     }
     elsif ($chem_pkg eq 'super_fast_llnl_mam3') {
-	$chem_nadv = 31; $chem_cppdefs = ' -DMODAL_AERO -DMODAL_AERO_3MODE ';
+	$chem_nadv = 32; $chem_cppdefs = ' -DMODAL_AERO -DMODAL_AERO_3MODE ';
     }
     elsif ($chem_pkg eq 'trop_mozart') {
 	$chem_nadv = 103;
@@ -1300,13 +1300,13 @@ if (($chem_pkg ne 'none') || ($prog_species)) {
 	$chem_nadv = 120;
     }
     elsif ($chem_pkg eq 'trop_strat_mam3') {
-	$chem_nadv = 144; $chem_cppdefs = ' -DMODAL_AERO -DMODAL_AERO_3MODE ';
+	$chem_nadv = 145; $chem_cppdefs = ' -DMODAL_AERO -DMODAL_AERO_3MODE ';
     }
     elsif ($chem_pkg eq 'trop_strat_mam7') {
-	$chem_nadv = 159; $chem_cppdefs = ' -DMODAL_AERO -DMODAL_AERO_7MODE ';
+	$chem_nadv = 160; $chem_cppdefs = ' -DMODAL_AERO -DMODAL_AERO_7MODE ';
     }
     elsif ($chem_pkg eq 'trop_mozart_mam3') {
-	$chem_nadv = 108; $chem_cppdefs = ' -DMODAL_AERO -DMODAL_AERO_3MODE ';
+	$chem_nadv = 109; $chem_cppdefs = ' -DMODAL_AERO -DMODAL_AERO_3MODE ';
     }
     elsif ($chem_pkg eq 'trop_strat_soa') {
 	$chem_nadv = 156;
@@ -1318,7 +1318,7 @@ if (($chem_pkg ne 'none') || ($prog_species)) {
 	$chem_nadv = 58; $chem_cppdefs = ' -DWACCM_MOZART ';
     }
     elsif ($chem_pkg eq 'waccm_mozart_mam3') {
-	$chem_nadv = 77; $chem_cppdefs = ' -DWACCM_MOZART -DDUST -DPROGSSLT -DMODAL_AERO -DMODAL_AERO_3MODE ';
+	$chem_nadv = 78; $chem_cppdefs = ' -DWACCM_MOZART -DDUST -DPROGSSLT -DMODAL_AERO -DMODAL_AERO_3MODE ';
     }
     elsif ($chem_pkg eq 'waccm_mozart_sulfur') {
 	$chem_nadv = 65; $chem_cppdefs = ' -DWACCM_MOZART ';
@@ -1327,10 +1327,10 @@ if (($chem_pkg ne 'none') || ($prog_species)) {
 	$chem_nadv = 4; $chem_cppdefs = ' -DWACCM_GHG ';
     }
     elsif ($chem_pkg eq 'trop_mam3') {
-	$chem_nadv = 20; $chem_cppdefs = ' -DMODAL_AERO -DMODAL_AERO_3MODE ';
+	$chem_nadv = 21; $chem_cppdefs = ' -DMODAL_AERO -DMODAL_AERO_3MODE ';
     }
     elsif ($chem_pkg eq 'trop_mam7') {
-	$chem_nadv = 37; $chem_cppdefs = ' -DMODAL_AERO -DMODAL_AERO_7MODE ';
+	$chem_nadv = 38; $chem_cppdefs = ' -DMODAL_AERO -DMODAL_AERO_7MODE ';
     }
     elsif ($chem_pkg eq 'trop_bam') {
 	$chem_nadv = 16;
