@@ -1,11 +1,23 @@
+
+
+
+
+
       module mo_nln_matrix
+
       use shr_kind_mod, only : r8 => shr_kind_r8
+
       private
       public :: nlnmat
+
       contains
+
       subroutine nlnmat( mat, y, rxt, lmat, dti )
+
       use chem_mods, only : gas_pcnst, rxntot, nzcnt
+
       implicit none
+
 !----------------------------------------------
 ! ... dummy arguments
 !----------------------------------------------
@@ -53,6 +65,7 @@
          mat( 20) = lmat( 20)
          mat( 21) = lmat( 21)
          mat( 22) = lmat( 22)
+         mat( 23) = lmat( 23)
          mat( 1) = mat( 1) - dti
          mat( 2) = mat( 2) - dti
          mat( 4) = mat( 4) - dti
@@ -73,5 +86,6 @@
          mat( 20) = mat( 20) - dti
          mat( 21) = mat( 21) - dti
          mat( 22) = mat( 22) - dti
+         mat( 23) = mat( 23) - dti
       end subroutine nlnmat_finit
       end module mo_nln_matrix

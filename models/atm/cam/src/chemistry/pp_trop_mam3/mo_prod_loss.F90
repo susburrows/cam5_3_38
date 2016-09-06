@@ -2,9 +2,6 @@
 
 
 
-
-
-
       module mo_prod_loss
 
       use shr_kind_mod, only : r8 => shr_kind_r8
@@ -97,6 +94,8 @@
          prod(19) = 0._r8
          loss(20) = ( + het_rates(20))* y(20)
          prod(20) = 0._r8
+         loss(21) = ( + het_rates(21))* y(21)
+         prod(21) = 0._r8
 
       end subroutine imp_prod_loss
 

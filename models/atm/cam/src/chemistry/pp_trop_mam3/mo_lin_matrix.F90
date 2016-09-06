@@ -3,7 +3,6 @@
 
 
 
-
       module mo_lin_matrix
 
       private
@@ -70,6 +69,8 @@
          mat(21) = -( het_rates(19) )
 
          mat(22) = -( het_rates(20) )
+
+         mat(23) = -( het_rates(21) )
 
 
       end subroutine linmat01
