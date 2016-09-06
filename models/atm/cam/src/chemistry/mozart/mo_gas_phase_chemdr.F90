@@ -108,6 +108,7 @@ contains
     call addfld( 'DTANT',   ' ',  1, 'I','photolysis diagnostic NH4SO4 OD', phys_decomp )
     call addfld( 'DTSAL',   ' ',  1, 'I','photolysis diagnostic salt OD', phys_decomp )
     call addfld( 'DTDUST',  ' ',  1, 'I','photolysis diagnostic dust OD', phys_decomp )
+    call addfld( 'DTBAC',   ' ',  1, 'I','photolysis diagnostic bacteria OD', phys_decomp )
     call addfld( 'DTTOTAL', ' ',  1, 'I','photolysis diagnostic total aerosol OD', phys_decomp )   
     call addfld( 'FRACDAY', ' ',  1, 'I','photolysis diagnostic fraction of day', phys_decomp )
 
