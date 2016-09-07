@@ -229,14 +229,14 @@ module bacteria_model
 
 
 subroutine bacteria_init()
-    !-----------------------------------------------------------------------                                     
+    !-----------------------------------------------------------------------
     !                                            
-    ! Purpose: READ INPUT FILES, CREATE FIELDS, and horizontally interpolate bacteria data                       
+    ! Purpose: READ INPUT FILES, CREATE FIELDS, and horizontally interpolate bacteria data
     !
-    ! Method:                                                                                                    
-    !                                                                                                            
-    ! Author: S. M. Burrows, adapted from dust_initialize                                                        
-    !                                                                                                            
+    ! Method:
+    !
+    ! Author: S. M. Burrows, adapted from dust_initialize
+    !
     !-----------------------------------------------------------------------                                  
     use tracer_data,      only : trcdata_init
     use cam_history,      only : addfld, add_default, phys_decomp
