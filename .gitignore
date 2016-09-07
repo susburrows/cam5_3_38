@@ -2,3 +2,9 @@
 SVN_EXTERNAL_DIRECTORIES
 *~
 models/atm/cam/bld/*
+*.mod
+models/atm/cam/chem_proc/src/OBJ/*
+models/atm/cam/chem_proc/bin/*
+models/atm/cam/chem_proc/output/*
+models/atm/cam/chem_proc/src/OBJ/*
+models/atm/cam/chem_proc/tmp/*
