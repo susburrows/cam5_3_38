@@ -26,8 +26,8 @@
       integer, parameter :: id_dst_a3 = 17
       integer, parameter :: id_ncl_a3 = 18
       integer, parameter :: id_so4_a3 = 19
-      integer, parameter :: id_bac_a3 = 20
-      integer, parameter :: id_num_a3 = 21
+      integer, parameter :: id_num_a3 = 20
+      integer, parameter :: id_bac_a3 = 21
 
 
       end module m_spc_id

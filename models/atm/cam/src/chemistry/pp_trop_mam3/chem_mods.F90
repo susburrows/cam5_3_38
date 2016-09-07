@@ -23,7 +23,7 @@
                             relcnt = 0, & ! number of relationship species
                             grpcnt = 0, & ! number of group members
                             nzcnt = 23, & ! number of non-zero matrix entries
-                            extcnt = 8, & ! number of species with external forcing
+                            extcnt = 7, & ! number of species with external forcing
                             clscnt1 = 0, & ! number of species in explicit class
                             clscnt2 = 0, & ! number of species in hov class
                             clscnt3 = 0, & ! number of species in ebi class

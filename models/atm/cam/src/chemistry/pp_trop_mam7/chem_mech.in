@@ -1,16 +1,3 @@
-BEGSIM
-output_unit_number = 7
-output_file        = modal_aerosols_7mode.doc
-procout_path       = ../output/
-src_path           = ../bkend/
-procfiles_path     = ../procfiles/cam/
-sim_dat_path       = ../output/
-sim_dat_filename   = cam_reduced_mech.dat
-
-Comments
-     "MAM7 modal aerosol chemistry with bacteria tracer added."
-End Comments
-
    SPECIES
 
       Solution
@@ -45,7 +32,6 @@ End Comments
  num_a6 -> H
  dst_a7 -> AlSiO5, 
  so4_a7 -> SO4
- bac_a7 -> C
  nh4_a7 -> NH4, 
  num_a7 -> H
       End Solution
@@ -74,7 +60,7 @@ End Comments
         ncl_a4, so4_a4, nh4_a4, num_a4
         dst_a5, so4_a5, nh4_a5, num_a5
         ncl_a6, so4_a6, nh4_a6, num_a6
-        dst_a7, so4_a7, nh4_a7, bac_a7, num_a7
+        dst_a7, so4_a7, nh4_a7, num_a7
       End Implicit
    End Solution Classes
 
@@ -93,16 +79,15 @@ End Comments
                NH3 + OH -> H2O                                    ; 1.7e-12, -710.
       End Reactions
 
-      Heterogeneous
-          H2O2, SO2
-      End Heterogeneous
-
       Ext Forcing
           SO2 <- dataset
           so4_a1 <- dataset
           so4_a2 <- dataset
           num_a1 <- dataset
           num_a2 <- dataset
+          pom_a3 <- dataset
+          bc_a3 <- dataset
+          num_a3 <- dataset
       End Ext Forcing
 
    END CHEMISTRY

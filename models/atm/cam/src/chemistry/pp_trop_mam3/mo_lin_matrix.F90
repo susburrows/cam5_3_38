@@ -68,9 +68,9 @@
 
          mat(21) = -( het_rates(19) )
 
-         mat(22) = -( het_rates(20) )
+         mat(22) = -( het_rates(21) )
 
-         mat(23) = -( het_rates(21) )
+         mat(23) = -( het_rates(20) )
 
 
       end subroutine linmat01

@@ -3,7 +3,7 @@
            |--------------------------------------------------------------------------------------------------|
            |                                                                                                  |
            |                                                                                                  |
-           |                    MAM3 modal aerosol chemistry with bacteria tracer added.                      |
+           |                         MAM3 model with bacteria aerosol tracer added.                           |
            |                                                                                                  |
            |                                                                                                  |
            |--------------------------------------------------------------------------------------------------|
@@ -29,8 +29,8 @@
       ( 17)  dst_a3             (AlSiO5)
       ( 18)  ncl_a3             (NaCl)
       ( 19)  so4_a3             (NH4HSO4)
-      ( 20)  bac_a3             (C)
-      ( 21)  num_a3             (H)
+      ( 20)  num_a3             (H)
+      ( 21)  bac_a3             (C)
   
   
      Invariant species
@@ -86,17 +86,14 @@ Class List
   usr_DMS_OH       (  5)   DMS + OH ->  .5*SO2 + .5*HO2                                         rate = ** User defined **         (  6)
                    (  6)   DMS + NO3 ->  SO2 + {HNO3}                                           rate = 1.90E-13*exp(    520./t)   (  7)
   
-Heterogeneous loss species
-  
 Extraneous prod/loss species
  ( 1)   SO2   (dataset)
  ( 2)   so4_a1   (dataset)
  ( 3)   so4_a2   (dataset)
  ( 4)   pom_a1   (dataset)
  ( 5)   bc_a1   (dataset)
- ( 6)   bac_a3   (dataset)
- ( 7)   num_a1   (dataset)
- ( 8)   num_a2   (dataset)
+ ( 6)   num_a1   (dataset)
+ ( 7)   num_a2   (dataset)
   
   
  Equation Report
@@ -122,5 +119,5 @@ Extraneous prod/loss species
     d(dst_a3)/dt = 0                                                                                                    
     d(ncl_a3)/dt = 0                                                                                                    
     d(so4_a3)/dt = 0                                                                                                    
-    d(bac_a3)/dt = 0                                                                                                    
     d(num_a3)/dt = 0                                                                                                    
+    d(bac_a3)/dt = 0                                                                                                    

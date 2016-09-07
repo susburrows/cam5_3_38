@@ -92,9 +92,9 @@
          prod(18) = 0._r8
          loss(19) = ( + het_rates(19))* y(19)
          prod(19) = 0._r8
-         loss(20) = ( + het_rates(20))* y(20)
+         loss(20) = ( + het_rates(21))* y(21)
          prod(20) = 0._r8
-         loss(21) = ( + het_rates(21))* y(21)
+         loss(21) = ( + het_rates(20))* y(20)
          prod(21) = 0._r8
 
       end subroutine imp_prod_loss
