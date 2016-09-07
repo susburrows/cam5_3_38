@@ -3530,7 +3530,7 @@ Default: FALSE
 </entry>
 
 <entry id="bacteria_cycle_yr" type="integer" category="cam_chem"
-       group="bacteria_nl" valid_values="" >
+       group="bacteria_nl" valid_values="CYCLICAL,SERIAL,INTERP_MISSING_MONTHS,FIXED" >
 The  cycle year of the prescribed bacterial aerosol flux data
 if <varname>bacteria_datatype</varname>  is 'CYCLICAL'.
 Format: YYYY
