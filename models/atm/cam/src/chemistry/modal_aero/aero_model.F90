@@ -987,6 +987,7 @@ contains
     ! sol_factic_coarse(:,:) = 0.30_r8 ! tuned 1/4
     f_act_conv_coarse(:,:) = 0.60_r8 ! rce 2010/05/02
     f_act_conv_coarse_dust = 0.40_r8 ! rce 2010/05/02
+    f_act_conv_coarse_bac  = 0.40_r8 ! rce 2010/05/02; smb 2016/09/07
     f_act_conv_coarse_nacl = 0.80_r8 ! rce 2010/05/02
     if (modeptr_coarse > 0) then
        lcoardust = lptr_dust_a_amode(modeptr_coarse)
@@ -996,7 +997,7 @@ contains
           do k = 1, pver
              do i = 1, ncol
                 tmpdust = max( 0.0_r8, state%q(i,k,lcoardust) + ptend%q(i,k,lcoardust)*dt )
-		tmpbac  = max( 0.0_r8, state%q(i,k,lcoardust) + ptend%q(i,k,lcoarbac)*dt )
+		tmpbac  = max( 0.0_r8, state%q(i,k,lcoarbac)  + ptend%q(i,k,lcoarbac)*dt )
                 tmpnacl = max( 0.0_r8, state%q(i,k,lcoarnacl) + ptend%q(i,k,lcoarnacl)*dt )
                 if ((tmpdust+tmpnacl+tmpbac) > 1.0e-30_r8) then
                    ! sol_factic_coarse(i,k) = (0.2_r8*tmpdust + 0.2_r8*tmpbac + 0.4_r8*tmpnacl)/(tmpdust+tmpbac+tmpnacl) ! tuned 1/6
