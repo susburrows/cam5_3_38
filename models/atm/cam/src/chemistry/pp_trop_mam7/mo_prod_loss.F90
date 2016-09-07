@@ -124,9 +124,9 @@
          prod(34) = 0._r8
          loss(35) = ( + het_rates(35))* y(35)
          prod(35) = 0._r8
-         loss(36) = ( + het_rates(37))* y(37)
+         loss(36) = ( + het_rates(36))* y(36)
          prod(36) = 0._r8
-         loss(37) = ( + het_rates(36))* y(36)
+         loss(37) = ( + het_rates(37))* y(37)
          prod(37) = 0._r8
          loss(38) = ( + het_rates(38))* y(38)
          prod(38) = 0._r8

@@ -100,9 +100,9 @@
 
          mat(37) = -( het_rates(35) )
 
-         mat(38) = -( het_rates(37) )
+         mat(38) = -( het_rates(36) )
 
-         mat(39) = -( het_rates(36) )
+         mat(39) = -( het_rates(37) )
 
          mat(40) = -( het_rates(38) )
 

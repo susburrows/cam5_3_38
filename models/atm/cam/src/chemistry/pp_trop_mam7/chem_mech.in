@@ -1,3 +1,16 @@
+BEGSIM
+output_unit_number = 7
+output_file        = modal_aerosols_7mode.doc
+procout_path       = ../output/
+src_path           = ../bkend/
+procfiles_path     = ../procfiles/cam/
+sim_dat_path       = ../output/
+sim_dat_filename   = modal_aerosols_7mode.dat
+
+Comments
+   "MAM7 model with bacteria aerosol tracer added."
+End Comments
+
    SPECIES
 
       Solution
@@ -33,6 +46,7 @@
  dst_a7 -> AlSiO5, 
  so4_a7 -> SO4
  nh4_a7 -> NH4, 
+ bac_a7 -> C
  num_a7 -> H
       End Solution
 
@@ -60,7 +74,7 @@
         ncl_a4, so4_a4, nh4_a4, num_a4
         dst_a5, so4_a5, nh4_a5, num_a5
         ncl_a6, so4_a6, nh4_a6, num_a6
-        dst_a7, so4_a7, nh4_a7, num_a7
+        dst_a7, so4_a7, nh4_a7, bac_a7, num_a7
       End Implicit
    End Solution Classes
 
@@ -105,3 +119,5 @@
      End Version Options
 
    END SIMULATION PARAMETERS
+
+ENDSIM

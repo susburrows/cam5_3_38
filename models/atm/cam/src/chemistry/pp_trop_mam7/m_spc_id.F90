@@ -42,8 +42,8 @@
       integer, parameter :: id_num_a6 = 33
       integer, parameter :: id_dst_a7 = 34
       integer, parameter :: id_so4_a7 = 35
-      integer, parameter :: id_bac_a7 = 36
-      integer, parameter :: id_nh4_a7 = 37
+      integer, parameter :: id_nh4_a7 = 36
+      integer, parameter :: id_bac_a7 = 37
       integer, parameter :: id_num_a7 = 38
 
 
