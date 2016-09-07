@@ -409,6 +409,7 @@ end function chem_is
     use tracer_srcs,      only: tracer_srcs_defaultopts, tracer_srcs_setopts
     use aero_model,       only: aero_model_readnl
     use dust_model,       only: dust_readnl
+    use bacteria_model,   only: bacteria_readnl
     use gas_wetdep_opts,  only: gas_wetdep_readnl
 
 #ifdef WACCM_MOZART
@@ -805,6 +806,7 @@ end function chem_is
 
    call aero_model_readnl(nlfile)
    call dust_readnl(nlfile)     
+   call bacteria_readnl(nlfile)
 !
    call gas_wetdep_readnl(nlfile)
 
