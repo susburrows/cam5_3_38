@@ -54,7 +54,7 @@ module bacteria_model
   character(len=256)  :: filename = ' '
   character(len=256)  :: filelist = ' '
   character(len=256)  :: datapath = ' '
-  character(len=32)   :: datatype = 'CYCLICAL'
+  character(len=32)   :: datatype = 'FIXED'
   integer             :: data_cycle_yr = 0
   logical             :: rmv_file = .false.
   integer             :: fixed_ymd = 0
@@ -251,7 +251,7 @@ subroutine bacteria_init()
     integer :: number_flds
 
     if ( masterproc ) then
-       write(iulog,*) 'bacteria organics are prescribed in :'//trim(filename)
+       write(iulog,*) 'bacteria emissions are prescribed in :'//trim(datapath)//trim(filename)
     endif
 
     allocate (file%in_pbuf(n_bacteria_data))

@@ -363,7 +363,7 @@
 <bacteria_filelist    ></bacteria_filelist>
 <bacteria_datapath    >/dtemp/burr114/projects/microbiome/Burrows2009_bacteria</bacteria_datapath>
 <bacteria_datatype    >FIXED</bacteria_datatype>
-<bacteria_cycle_yr    >1</bacteria_cycle_yr>
+<bacteria_cycle_yr    >0</bacteria_cycle_yr>
 <bacteria_rmv_file    >.false.</bacteria_rmv_file>
 <bacteria_fixed_ymd   >10723</bacteria_fixed_ymd>
 <bacteria_fixed_tod   >0</bacteria_fixed_tod>

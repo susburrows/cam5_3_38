@@ -2523,6 +2523,19 @@ if ($chem =~ /_mam/) {
     add_default($nl, 'sol_facti_cloud_borne');
 }
 
+# Bacteria emissions files
+if ($chem =~ /_mam/) {
+    add_default($nl, 'bacteria_specifier');
+    add_default($nl, 'bacteria_filename');
+    add_default($nl, 'bacteria_filelist');
+    add_default($nl, 'bacteria_datapath');
+    add_default($nl, 'bacteria_datatype');
+    add_default($nl, 'bacteria_rmv_file');
+    add_default($nl, 'bacteria_cycle_yr');
+    add_default($nl, 'bacteria_fixed_ymd');
+    add_default($nl, 'bacteria_fixed_tod');
+}
+
 # Turbulent Mountain Stress
 add_default($nl, 'do_tms');
 my $do_tms = $nl->get_value('do_tms');

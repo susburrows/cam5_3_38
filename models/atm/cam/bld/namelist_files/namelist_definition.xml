@@ -3598,7 +3598,7 @@ Default: 'SERIAL'
 The  cycle year of the prescribed aerosol flux data
 if <varname>aerodep_flx_type</varname>  is 'CYCLICAL'.
 Format: YYYY
-Default: 0
+Default: none
 </entry>
 
 <entry id="aerodep_flx_fixed_ymd" type="integer" category="cam_chem"
