@@ -24,8 +24,8 @@ End Comments
  num_a2 -> H
  dst_a3 -> AlSiO5, ncl_a3 -> NaCl
  so4_a3 -> NH4HSO4
- num_a3 -> H
  bac_a3 -> C
+ num_a3 -> H
       End Solution
 
       Fixed

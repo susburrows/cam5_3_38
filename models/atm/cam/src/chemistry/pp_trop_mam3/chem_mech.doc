@@ -29,8 +29,8 @@
       ( 17)  dst_a3             (AlSiO5)
       ( 18)  ncl_a3             (NaCl)
       ( 19)  so4_a3             (NH4HSO4)
-      ( 20)  num_a3             (H)
-      ( 21)  bac_a3             (C)
+      ( 20)  bac_a3             (C)
+      ( 21)  num_a3             (H)
   
   
      Invariant species
@@ -119,5 +119,5 @@ Extraneous prod/loss species
     d(dst_a3)/dt = 0                                                                                                    
     d(ncl_a3)/dt = 0                                                                                                    
     d(so4_a3)/dt = 0                                                                                                    
-    d(num_a3)/dt = 0                                                                                                    
     d(bac_a3)/dt = 0                                                                                                    
+    d(num_a3)/dt = 0                                                                                                    
