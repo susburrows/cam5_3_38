@@ -1638,7 +1638,6 @@ contains
           if (m<=bacteria_nbin) sflx(:ncol)=sflx(:ncol)+cam_in%cflx(:ncol,mm)
           call outfld(trim(bacteria_names(m))//'SF',cam_in%cflx(:,mm),pcols, lchnk)
        enddo
-       call outfld('BACSFMBL',sflx(:),pcols,lchnk)
     endif
 
     if (seasalt_active) then
