@@ -3,6 +3,7 @@
 !===============================================================================
 module bacteria_model 
   use shr_kind_mod, only: r8 => shr_kind_r8, cl => shr_kind_cl
+  use ppgrid,       only: pcols
   use spmd_utils,   only: masterproc
   use abortutils,   only: endrun
   use camsrfexch,   only: cam_in_t
@@ -19,10 +20,13 @@ module bacteria_model
   public :: bacteria_indices
   public :: bacteria_readnl
   public :: bacteria_init
-  public :: bacteria_active
+  public :: has_bacteria
+  public :: advance_bacteria_data
 
   integer, parameter :: bacteria_nbin = 1
   integer, parameter :: bacteria_nnum = 1
+
+  real(r8), parameter :: small_bacteria_emit = 1.0e-30 ! smallest bacteria emission allowed
 
 ! Tracer fields
   type(trfld), pointer :: fields(:)
@@ -45,7 +49,7 @@ module bacteria_model
 
   real(r8)          :: bacteria_emis_fact = 1.0_r8     ! overall scaling parameter for bacteria emissions
 
-  logical :: bacteria_active = .true.
+  logical :: has_bacteria = .true.
 
   integer, parameter :: & ! number of bacteria data fields
          n_bacteria_data = 1
@@ -240,13 +244,13 @@ subroutine bacteria_init()
     !-----------------------------------------------------------------------                                  
     use tracer_data,      only : trcdata_init
     use cam_history,      only : addfld, add_default, phys_decomp
-    use ppgrid,           only : pcols
     use ppgrid,           only : begchunk, endchunk
+    use constituents,     only : cnst_get_ind
 
     !-----------------------------------------------------------------------                                     
     !   ... local variables                                                                                      
     !-----------------------------------------------------------------------                                  
-    integer :: i,j,c
+    integer :: i,j,c,m
     integer :: ierr,did,vid,nlon,nlat,ntimes,ncols
     integer :: number_flds
 
@@ -302,8 +306,76 @@ subroutine bacteria_init()
        write(iulog,*) 'Done initializing bacteria emissions data'
     endif
 
-    bacteria_active = .true.
+    do m = 1, bacteria_nbin
+       call cnst_get_ind(bacteria_names(m), bacteria_indices(m), abort=.false.)
+    enddo
+    do m = 1, bacteria_nnum
+       call cnst_get_ind(bacteria_names(bacteria_nbin+m), bacteria_indices(bacteria_nbin+m),abort=.false.)
+    enddo
+
+    has_bacteria = any(bacteria_indices(:) > 0)
+
+    if (.not.has_bacteria) return
 
   end subroutine bacteria_init
+
+!-------------------------------------------------------------------
+! Advance bacteria data fields to the current time step
+!
+! Adapted from prescribed_aero_adv
+!
+! Author: Susannah M. Burrows
+! Date: 7 Sep 2016
+!-------------------------------------------------------------------
+subroutine advance_bacteria_data(state, pbuf2d)
+    use physics_types,  only : physics_state
+    use tracer_data,    only : advance_trcdata, get_fld_data, put_fld_data
+    use ppgrid,         only : begchunk, endchunk
+    use physics_buffer, only : physics_buffer_desc, pbuf_get_chunk
+    use cam_history,    only : outfld
+
+    implicit none
+
+    type(physics_state), intent(in)    :: state(begchunk:endchunk)
+    type(physics_buffer_desc), pointer :: pbuf2d(:,:)
+    type(physics_buffer_desc), pointer :: pbuf_chnk(:)
+
+    integer :: i,c,ncol
+!    real(r8),pointer :: outdata(:,:)
+!    real(r8) :: outdata(pcols,begchunk:endchunk)
+    real(r8) :: outdata(pcols,1)
+    integer lchnk
+
+!    write(iulog,*) 'Advancing bacteria data ...' ! for debugging
+    call advance_trcdata( fields, file, state, pbuf2d )
+!    write(iulog,*) 'Done advancing bacteria data ...' ! for debugging
+
+! Add new values to history files
+    fldloop:do i = 1,n_bacteria_data
+
+       chnkloop: do c = begchunk,endchunk
+          ncol = state(c)%ncol
+          pbuf_chnk => pbuf_get_chunk(pbuf2d, c)
+          lchnk = state(c)%lchnk
+
+          call get_fld_data( fields, fields(i)%fldnam, outdata(:ncol,:), ncol, lchnk, pbuf_chnk)
+
+          ! work-around for interpolation errors that introduce negative values
+          ! near coasts: reset negative values to zero.
+          where (outdata(:ncol,1) < small_bacteria_emit)
+             outdata(:ncol,1) = 0.0_r8
+          end where
+
+          call put_fld_data( fields, fields(i)%fldnam, outdata(:ncol,:), ncol, lchnk, pbuf_chnk)
+
+          ! The following line is probably redundant but is included for safety
+          call get_fld_data( fields, fields(i)%fldnam, outdata(:ncol,:), ncol, lchnk, pbuf_chnk)
+
+          call outfld( trim(fields(i)%fldnam), outdata(:ncol,1), ncol, lchnk )
+       enddo chnkloop
+
+    enddo fldloop
+
+end subroutine advance_bacteria_data
 
 end module bacteria_model

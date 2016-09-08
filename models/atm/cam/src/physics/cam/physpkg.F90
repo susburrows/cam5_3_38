@@ -2268,6 +2268,7 @@ subroutine phys_timestep_init(phys_state, cam_out, pbuf2d)
   use qbo,                 only: qbo_timestep_init
   use efield,              only: get_efield
   use iondrag,             only: do_waccm_ions
+  use bacteria_model,      only: advance_bacteria_data, has_bacteria
   use perf_mod
 
   use prescribed_ozone,    only: prescribed_ozone_adv
@@ -2302,6 +2303,11 @@ subroutine phys_timestep_init(phys_state, cam_out, pbuf2d)
   call prescribed_aero_adv(phys_state, pbuf2d)
   call aircraft_emit_adv(phys_state, pbuf2d)
   call prescribed_volcaero_adv(phys_state, pbuf2d)
+
+  ! Bacteria aerosol
+  if (has_bacteria) then
+    call advance_bacteria_data(phys_state, pbuf2d)
+  end if
 
   ! prescribed aerosol deposition fluxes
   call aerodep_flx_adv(phys_state, pbuf2d, cam_out)

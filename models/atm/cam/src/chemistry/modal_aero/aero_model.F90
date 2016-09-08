@@ -153,7 +153,7 @@ contains
     use modal_aero_initialize_data, only: modal_aero_initialize
     use rad_constituents,           only: rad_cnst_get_info
     use dust_model,      only: dust_init, dust_names, dust_active, dust_nbin, dust_nnum
-    use bacteria_model,  only: bacteria_init, bacteria_names, bacteria_active, bacteria_nbin, bacteria_nnum
+    use bacteria_model,  only: bacteria_init, bacteria_names, has_bacteria, bacteria_nbin, bacteria_nnum
     use seasalt_model,   only: seasalt_init, seasalt_names, seasalt_active,seasalt_nbin
     use drydep_mod,      only: inidrydep
     use wetdep,          only: wetdep_init
@@ -279,7 +279,7 @@ contains
 
     endif
 
-    if (bacteria_active) then
+    if (has_bacteria) then
 
        do m = 1, bacteria_nbin
           dummy = trim(bacteria_names(m)) // 'SF'
@@ -1593,7 +1593,7 @@ contains
   subroutine aero_model_emissions( state, cam_in )
     use seasalt_model, only: seasalt_emis, seasalt_names, seasalt_indices, seasalt_active,seasalt_nbin
     use dust_model,    only: dust_emis, dust_names, dust_indices, dust_active,dust_nbin, dust_nnum
-    use bacteria_model, only: bacteria_emis, bacteria_names, bacteria_indices, bacteria_active, bacteria_nbin, bacteria_nnum
+    use bacteria_model, only: bacteria_emis, bacteria_names, bacteria_indices, has_bacteria, bacteria_nbin, bacteria_nnum
     use physics_types, only: physics_state
 
     ! Arguments:
@@ -1628,7 +1628,7 @@ contains
        call outfld('LND_MBL',soil_erod_tmp(:),pcols, lchnk )
     endif
 
-    if (bacteria_active) then
+    if (has_bacteria) then
 
        call bacteria_emis( state, cam_in )
 
