@@ -213,7 +213,7 @@ character(len=14), parameter :: mode_type_names(num_mode_types) = (/ &
    'fine_dust     ', 'coarse        ', 'coarse_seasalt', 'coarse_dust   '  /)
 character(len=9), parameter :: spec_type_names(num_spec_types) = (/ &
    'sulfate  ', 'ammonium ', 'nitrate  ', 'p-organic', &
-   's-organic', 'black-c  ', 'seasalt  ', 'dust     ', 'bacteria  '/)
+   's-organic', 'black-c  ', 'seasalt  ', 'dust     ', 'bacteria '/)
 
 
 !==============================================================================
