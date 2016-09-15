@@ -222,6 +222,8 @@ contains
     case( 'CYCLICAL_LIST' )
        file%cyclical_list = .true.
        file%cyc_yr = data_cycle_yr
+    case( 'STEP_TIME' )
+       file%stepTime = .true.
     case( 'SERIAL' )
     case default 
        write(iulog,*) 'trcdata_init: invalid data type: '//trim(data_type)//' file: '//trim(filename)
@@ -251,6 +253,13 @@ contains
           str_yr = data_fixed_ymd/10000
           str_mon = (data_fixed_ymd - str_yr*10000)/100
           str_day = data_fixed_ymd - str_yr*10000 - str_mon*100
+
+	  if (masterproc) then
+	      write(iulog,*) 'trcdata_init: str_yr  : '//trim(char(str_yr)) //' file: '//trim(filename)
+	      write(iulog,*) 'trcdata_init: str_mon : '//trim(char(str_mon))//' file: '//trim(filename)
+	      write(iulog,*) 'trcdata_init: str_day : '//trim(char(str_day))//' file: '//trim(filename)
+          endif
+
           call set_time_float_from_date( start_time, str_yr, str_mon, str_day, data_fixed_tod )
           file%offset_time = start_time - file%curr_mod_time
        else

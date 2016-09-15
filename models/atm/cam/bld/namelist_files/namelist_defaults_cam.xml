@@ -360,12 +360,12 @@
 <!-- Bacterial aerosol emissions -->
 <bacteria_specifier   >'bac_flx:bacteria_flux'</bacteria_specifier>
 <bacteria_filename    >bacteria_emis_scaled_date.nc</bacteria_filename>
-<bacteria_filelist    ></bacteria_filelist>
+<bacteria_filelist    >filelist</bacteria_filelist>
 <bacteria_datapath    >/dtemp/burr114/projects/microbiome/Burrows2009_bacteria</bacteria_datapath>
 <bacteria_datatype    >FIXED</bacteria_datatype>
 <bacteria_cycle_yr    >0</bacteria_cycle_yr>
 <bacteria_rmv_file    >.false.</bacteria_rmv_file>
-<bacteria_fixed_ymd   >10723</bacteria_fixed_ymd>
+<bacteria_fixed_ymd   >10101</bacteria_fixed_ymd>
 <bacteria_fixed_tod   >0</bacteria_fixed_tod>
 
 <!-- aerosol deposition (2000 climatology) -->

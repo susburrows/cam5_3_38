@@ -55,9 +55,9 @@ module bacteria_model
          n_bacteria_data = 1
 
   character(len=32)   :: specifier(n_bacteria_data) = ''
-  character(len=256)  :: filename = ' '
-  character(len=256)  :: filelist = ' '
-  character(len=256)  :: datapath = ' '
+  character(len=256)  :: filename = ''
+  character(len=256)  :: filelist = ''
+  character(len=256)  :: datapath = ''
   character(len=32)   :: datatype = 'FIXED'
   integer             :: data_cycle_yr = 0
   logical             :: rmv_file = .false.
@@ -187,7 +187,7 @@ module bacteria_model
     integer    :: ncol, lchnk
     integer :: i, m, ibac, inum
     real(r8) :: x_mton
-    real(r8), pointer :: cflx(:,:), bacteria_flux_in(:)
+    real(r8), pointer :: cflx(:,:), bac_flx(:)
 
   ! Get model state
     lchnk = state%lchnk
@@ -197,18 +197,23 @@ module bacteria_model
     cflx   => cam_in%cflx
 
   ! Pointer to input emissions
-    nullify(bacteria_flux_in)
+    nullify(bac_flx)
 
     fldloop: do i=1,n_bacteria_data
       select case (trim(fields(i)%fldnam))
       case( "bac_flx" )
-         bacteria_flux_in => fields(i)%data(1:ncol,1,lchnk)
+         bac_flx => fields(i)%data(1:ncol,1,lchnk)
       case default
          if ( masterproc ) then
             write(iulog,*) 'Unknown field name '//fields%fldnam//' in progseasalts field ...'
          endif
       end select
     end do fldloop
+
+    if (.not. associated(bac_flx)) then
+      write(iulog, *) "ERROR in bacteria_model.F90: bac_flx not associated."
+      return
+    end if
 
     ! set bacteria emissions
 
@@ -219,7 +224,7 @@ module bacteria_model
        ! will need to be modified.
 
        ibac = bacteria_indices(m)
-       cflx(:ncol,ibac) = bacteria_emis_fact * bacteria_flux_in(:)
+       cflx(:ncol,ibac) = bacteria_emis_fact * bac_flx(:ncol)
 
        ! Mass-to-number conversion factor
        x_mton = 6._r8 / (pi * bacteria_density * (bacteria_diameter(m)**3._r8))
@@ -253,6 +258,7 @@ subroutine bacteria_init()
     integer :: i,j,c,m
     integer :: ierr,did,vid,nlon,nlat,ntimes,ncols
     integer :: number_flds
+    character(len=32) :: trc_datatype
 
     if ( masterproc ) then
        write(iulog,*) 'bacteria emissions are prescribed in :'//trim(datapath)//trim(filename)
@@ -261,8 +267,18 @@ subroutine bacteria_init()
     allocate (file%in_pbuf(n_bacteria_data))
     file%in_pbuf(:) = .false.
 
+    if (trim(datatype) == 'STEP_TIME') then
+       trc_datatype = 'CYCLICAL_LIST'
+    else
+       trc_datatype = datatype
+    end if
+
     call trcdata_init( specifier, filename, filelist, datapath, fields, file, &
-                       rmv_file, data_cycle_yr, fixed_ymd, fixed_tod, datatype)
+                         rmv_file, data_cycle_yr, fixed_ymd, fixed_tod, datatype)
+    if (trim(datatype) == 'STEP_TIME') then
+       file%stepTime = .true.
+       file%curr_filename = filename
+    end if
 
     number_flds = 0
     if (associated(fields)) number_flds = size( fields )
@@ -296,7 +312,7 @@ subroutine bacteria_init()
 !!$       ! Set names of variable tendencies and declare them as history variables
 !!$       !    addfld(fname,                 unite,              numlev, avgflag, long_name, decomp_type, ...)
 
-       if ( trim(fields(i)%fldnam) == "bacteria_flux" ) then
+       if ( trim(fields(i)%fldnam) == "bac_flx" ) then
           call addfld(trim(fields(i)%fldnam), 'm^-2 s^-1 ', 1, 'A', 'bacteria input data: '//fields(i)%fldnam, phys_decomp )
           call add_default (fields(i)%fldnam, 1, ' ')
        endif
@@ -346,9 +362,15 @@ subroutine advance_bacteria_data(state, pbuf2d)
     real(r8) :: outdata(pcols,1)
     integer lchnk
 
-!    write(iulog,*) 'Advancing bacteria data ...' ! for debugging
-    call advance_trcdata( fields, file, state, pbuf2d )
-!    write(iulog,*) 'Done advancing bacteria data ...' ! for debugging
+    if (file%fixed) then
+        write(iulog,*) 'bacteria_model: file%fixed = .TRUE.'
+        write(iulog,*) 'Not advancing bacteria data.' ! for debugging
+    else
+        write(iulog,*) 'bacteria_model: file%fixed = .FALSE.'
+        write(iulog,*) 'Advancing bacteria data ...' ! for debugging
+	call advance_trcdata( fields, file, state, pbuf2d )
+        write(iulog,*) 'Done advancing bacteria data ...' ! for debugging
+    end if
 
 ! Add new values to history files
     fldloop:do i = 1,n_bacteria_data

@@ -3506,7 +3506,7 @@ Default: bacteria_emis_scaled_date.nc'
 contains a sequence of filenames for prescribed bacteria emissions.
 The filenames in this file are relative to the directory specied
 by <varname>bacteria_datapath</varname>.
-Default: none
+Default: filelist
 </entry>
 
 <entry id="bacteria_datapath" type="char*256" input_pathname="abs" category="cam_chem"
@@ -3517,9 +3517,9 @@ Default: '/dtemp/burr114/projects/microbiome/Burrows2009_bacteria/'
 </entry>
 
 <entry id="bacteria_datatype" type="char*32" category="cam_chem"
-       group="bacteria_nl" valid_values="CYCLICAL,SERIAL,INTERP_MISSING_MONTHS,FIXED" >
+       group="bacteria_nl" valid_values="CYCLICAL,SERIAL,INTERP_MISSING_MONTHS,FIXED,STEP_TIME" >
 Type of time interpolation for data in bacteria files.
-Can be set to 'CYCLICAL', 'SERIAL', 'INTERP_MISSING_MONTHS', or 'FIXED'.
+Can be set to 'CYCLICAL', 'SERIAL', 'INTERP_MISSING_MONTHS', 'FIXED', or 'STEP_TIME'.
 Default: 'FIXED'
 </entry>
 
@@ -3534,7 +3534,7 @@ Default: FALSE
 The  cycle year of the prescribed bacterial aerosol flux data
 if <varname>bacteria_datatype</varname>  is 'CYCLICAL'.
 Format: YYYY
-Default: 1
+Default: 0
 </entry>
 
 <entry id="bacteria_fixed_ymd" type="integer" category="cam_chem"
@@ -3542,7 +3542,7 @@ Default: 1
 The date at which the prescribed aerosol flux data is fixed
 if <varname>bacteria_type</varname> is 'FIXED'.
 Format: YYYYMMDD
-Default: 10723
+Default: 010101
 </entry>
 
 <entry id="bacteria_fixed_tod" type="integer" category="cam_chem"
