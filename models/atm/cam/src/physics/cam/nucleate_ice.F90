@@ -139,6 +139,9 @@ subroutine nucleati(  &
       deles = (esl - esi)
       nimey=1.e-3_r8*exp(12.96_r8*deles/esi - 0.639_r8) 
    else
+      esl = 0.0_r8
+      esi = 0.0_r8
+      deles = 0.0_r8
       nimey=0._r8
    endif
 
