@@ -43,6 +43,8 @@ module cam_cpl_indices
   integer :: index_a2x_Faxa_dstdry2    ! flux: Size 2 dust -- dry deposition
   integer :: index_a2x_Faxa_dstdry3    ! flux: Size 3 dust -- dry deposition
   integer :: index_a2x_Faxa_dstdry4    ! flux: Size 4 dust -- dry deposition
+  integer :: index_a2x_Faxa_bacwet     ! flux: Bacteria wet deposition
+  integer :: index_a2x_Faxa_bacdry     ! flux: Bacteria dry deposition
   integer :: index_a2x_Sa_co2prog      ! bottom atm level prognostic co2
   integer :: index_a2x_Sa_co2diag      ! bottom atm level diagnostic co2
 
@@ -180,7 +182,8 @@ contains
     index_a2x_Faxa_dstwet1  = mct_avect_indexra(a2x,'Faxa_dstwet1')
     index_a2x_Faxa_dstwet2  = mct_avect_indexra(a2x,'Faxa_dstwet2')
     index_a2x_Faxa_dstwet3  = mct_avect_indexra(a2x,'Faxa_dstwet3')
-    index_a2x_Faxa_dstwet4  = mct_avect_indexra(a2x,'Faxa_dstwet4')
+    index_a2x_Faxa_bacdry   = mct_avect_indexra(a2x,'Faxa_bacdry')
+    index_a2x_Faxa_bacwet   = mct_avect_indexra(a2x,'Faxa_bacwet')
     index_a2x_Sa_co2prog    = mct_avect_indexra(a2x,'Sa_co2prog',perrWith='quiet')
     index_a2x_Sa_co2diag    = mct_avect_indexra(a2x,'Sa_co2diag',perrWith='quiet')
 

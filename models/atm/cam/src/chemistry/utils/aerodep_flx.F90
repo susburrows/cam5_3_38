@@ -27,7 +27,7 @@ module aerodep_flx
 
   logical :: has_aerodep_flx = .false.
   integer, parameter, public :: N_BULK = 14
-  integer, parameter, public :: N_MODAL = 22
+  integer, parameter, public :: N_MODAL = 26
   integer :: number_flds
 
   character(len=256) :: filename = ' '
@@ -56,15 +56,19 @@ module aerodep_flx
   integer :: idstdry1,idstdry2,idstdry3,idstdry4
   integer :: idstwet1,idstwet2,idstwet3,idstwet4
 
+!  integer :: ibacwet,ibacdry
+
   ! for modal aerosol fluxes
 
   character(len=12), parameter :: modal_names(N_MODAL) = (/ &
        'bc_a1DDF    ', 'bc_c1DDF    ', 'pom_a1DDF   ', 'pom_c1DDF   ',  &
        'soa_a1DDF   ', 'soa_c1DDF   ', 'soa_a2DDF   ', 'soa_c2DDF   ',  &
        'dst_a1DDF   ', 'dst_c1DDF   ', 'dst_a3DDF   ', 'dst_c3DDF   ',  &
+       'bac_a3DDF   ', 'bac_c3DDF   ',                                  &
        'bc_a1SFWET  ', 'bc_c1SFWET  ', 'pom_a1SFWET ', 'pom_c1SFWET ',  &
        'soa_a1SFWET ', 'soa_c1SFWET ', 'dst_a1SFWET ', 'dst_c1SFWET ',  &
-       'dst_a3SFWET ', 'dst_c3SFWET ' /)
+       'dst_a3SFWET ', 'dst_c3SFWET ',                                  &
+       'bac_a3SFWET ', 'bac_c3SFWET ' /)
 
   integer :: index_modal_map(N_MODAL)
 
@@ -74,10 +78,11 @@ module aerodep_flx
   integer, parameter :: idx_soa2 = 4
   integer, parameter :: idx_dst1 = 5
   integer, parameter :: idx_dst3 = 6
-  integer, parameter :: idx_ncl3 = 7
-  integer, parameter :: idx_so43 = 8
+  integer, parameter :: idx_bac3 = 7
+  integer, parameter :: idx_ncl3 = 8
+  integer, parameter :: idx_so43 = 9
   
-  integer, parameter :: nmodal_idxs = 8
+  integer, parameter :: nmodal_idxs = 9
 
   integer :: idx_bc1_dryis = -1
   integer :: idx_bc1_drycw = -1
@@ -91,6 +96,8 @@ module aerodep_flx
   integer :: idx_dst1_drycw = -1
   integer :: idx_dst3_dryis = -1
   integer :: idx_dst3_drycw = -1
+  integer :: idx_bac3_dryis = -1
+  integer :: idx_bac3_drycw = -1
 
   integer :: idx_bc1_wetis = -1
   integer :: idx_bc1_wetcw = -1
@@ -102,6 +109,8 @@ module aerodep_flx
   integer :: idx_dst1_wetcw = -1
   integer :: idx_dst3_wetis = -1
   integer :: idx_dst3_wetcw = -1
+  integer :: idx_bac3_wetis = -1
+  integer :: idx_bac3_wetcw = -1
 
   logical :: modal_fluxes = .false.
 
@@ -183,21 +192,25 @@ contains
        idx_dst1_drycw = index_modal_map(10)
        idx_dst3_dryis = index_modal_map(11)
        idx_dst3_drycw = index_modal_map(12)
+       idx_bac3_dryis = index_modal_map(13)
+       idx_bac3_drycw = index_modal_map(14)
 
-       idx_bc1_wetis  = index_modal_map(13)
-       idx_bc1_wetcw  = index_modal_map(14)
-       idx_pom1_wetis = index_modal_map(15)
-       idx_pom1_wetcw = index_modal_map(16)
-       idx_soa1_wetis = index_modal_map(17)
-       idx_soa1_wetcw = index_modal_map(18)
-       idx_dst1_wetis = index_modal_map(19)
-       idx_dst1_wetcw = index_modal_map(20)
-       idx_dst3_wetis = index_modal_map(21)
-       idx_dst3_wetcw = index_modal_map(22)
+       idx_bc1_wetis  = index_modal_map(15)
+       idx_bc1_wetcw  = index_modal_map(16)
+       idx_pom1_wetis = index_modal_map(17)
+       idx_pom1_wetcw = index_modal_map(18)
+       idx_soa1_wetis = index_modal_map(19)
+       idx_soa1_wetcw = index_modal_map(20)
+       idx_dst1_wetis = index_modal_map(21)
+       idx_dst1_wetcw = index_modal_map(22)
+       idx_dst3_wetis = index_modal_map(23)
+       idx_dst3_wetcw = index_modal_map(24)
+       idx_bac3_wetis = index_modal_map(25)
+       idx_bac3_wetcw = index_modal_map(26)
 
        call modal_aero_deposition_init( bc1_ndx=idx_bc1,   pom1_ndx=idx_pom1, soa1_ndx=idx_soa1, &
                                         soa2_ndx=idx_soa2, dst1_ndx=idx_dst1, dst3_ndx=idx_dst3, &
-                                        ncl3_ndx=idx_ncl3, so43_ndx=idx_so43 )
+                                        bac3_ndx=idx_bac3, ncl3_ndx=idx_ncl3, so43_ndx=idx_so43 )
     else
 
        ibcphiwet = index_bulk_map(1)
@@ -214,6 +227,8 @@ contains
        idstwet2  = index_bulk_map(12)
        idstwet3  = index_bulk_map(13)
        idstwet4  = index_bulk_map(14)
+!       ibacwet   = index_bulk_map(15)
+!       ibacdry   = index_bulk_map(16)
 
     endif
 
@@ -397,6 +412,9 @@ end subroutine aerodep_flx_readnl
     call set_fluxes( cam_out%dstwet3, idstwet3, ncol, lchnk )
     call set_fluxes( cam_out%dstwet4, idstwet4, ncol, lchnk )
 
+!    call set_fluxes( cam_out%bacwet, ibacwet, ncol, lchnk )
+!    call set_fluxes( cam_out%bacdry, ibacdry, ncol, lchnk )
+
   end subroutine set_bulk_fluxes
 
 !-------------------------------------------------------------------
@@ -433,6 +451,8 @@ end subroutine aerodep_flx_readnl
     call set_fluxes( aerdepwetcw(:ncol,idx_dst1), idx_dst1_wetcw, ncol, lchnk )
     call set_fluxes( aerdepwetis(:ncol,idx_dst3), idx_dst3_wetis, ncol, lchnk )
     call set_fluxes( aerdepwetcw(:ncol,idx_dst3), idx_dst3_wetcw, ncol, lchnk )
+    call set_fluxes( aerdepwetis(:ncol,idx_bac3), idx_bac3_wetis, ncol, lchnk )
+    call set_fluxes( aerdepwetcw(:ncol,idx_bac3), idx_bac3_wetcw, ncol, lchnk )
 
     call set_fluxes( aerdepdryis(:ncol,idx_bc1 ), idx_bc1_dryis , ncol, lchnk )
     call set_fluxes( aerdepdrycw(:ncol,idx_bc1 ), idx_bc1_drycw , ncol, lchnk )
@@ -446,6 +466,8 @@ end subroutine aerodep_flx_readnl
     call set_fluxes( aerdepdrycw(:ncol,idx_dst1), idx_dst1_drycw, ncol, lchnk )
     call set_fluxes( aerdepdryis(:ncol,idx_dst3), idx_dst3_dryis, ncol, lchnk )
     call set_fluxes( aerdepdrycw(:ncol,idx_dst3), idx_dst3_drycw, ncol, lchnk )
+    call set_fluxes( aerdepdryis(:ncol,idx_dst3), idx_bac3_dryis, ncol, lchnk )
+    call set_fluxes( aerdepdrycw(:ncol,idx_dst3), idx_bac3_drycw, ncol, lchnk )
 
     call set_srf_drydep(aerdepdryis, aerdepdrycw, cam_out)
     call set_srf_wetdep(aerdepwetis, aerdepwetcw, cam_out)

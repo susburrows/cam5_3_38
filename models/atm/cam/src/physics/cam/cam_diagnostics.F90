@@ -574,6 +574,8 @@ subroutine diag_init()
    call addfld('a2x_DSTDRY3',  'kg/m2/s', 1, 'A', 'drydep of dust (bin3)',                phys_decomp)
    call addfld('a2x_DSTWET4',  'kg/m2/s', 1, 'A', 'wetdep of dust (bin4)',                phys_decomp)
    call addfld('a2x_DSTDRY4',  'kg/m2/s', 1, 'A', 'drydep of dust (bin4)',                phys_decomp)
+   call addfld('a2x_BACWET',   'kg/m2/s', 1, 'A', 'wetdep of bacteria',                   phys_decomp)
+   call addfld('a2x_BACDRY',   'kg/m2/s', 1, 'A', 'drydep of bacteria',                   phys_decomp)
 
    !---------------------------------------------------------
    ! CAM history fields for CAM-DOM/CAM-CSIM 
@@ -1483,6 +1485,8 @@ subroutine diag_export(cam_out)
       cam_out%dstdry3  = 0.0_r8
       cam_out%dstwet4  = 0.0_r8
       cam_out%dstdry4  = 0.0_r8
+      cam_out%bacwet   = 0.0_r8
+      cam_out%bacdry   = 0.0_r8
    end if
 
    call outfld('a2x_BCPHIWET', cam_out%bcphiwet, pcols, lchnk)
@@ -1499,6 +1503,8 @@ subroutine diag_export(cam_out)
    call outfld('a2x_DSTDRY3',  cam_out%dstdry3,  pcols, lchnk)
    call outfld('a2x_DSTWET4',  cam_out%dstwet4,  pcols, lchnk)
    call outfld('a2x_DSTDRY4',  cam_out%dstdry4,  pcols, lchnk)
+   call outfld('a2x_BACWET',   cam_out%bacwet,   pcols, lchnk)
+   call outfld('a2x_BACDRY',   cam_out%bacdry,   pcols, lchnk)
 
 end subroutine diag_export
 

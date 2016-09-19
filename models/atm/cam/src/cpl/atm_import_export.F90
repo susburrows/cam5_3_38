@@ -247,6 +247,8 @@ contains
           a2x(index_a2x_Faxa_dstdry3,ig)  = cam_out(c)%dstdry3(i)
           a2x(index_a2x_Faxa_dstwet4,ig)  = cam_out(c)%dstwet4(i)
           a2x(index_a2x_Faxa_dstdry4,ig)  = cam_out(c)%dstdry4(i)
+          a2x(index_a2x_Faxa_bacwet,ig)   = cam_out(c)%bacwet(i)
+          a2x(index_a2x_Faxa_bacdry,ig)   = cam_out(c)%bacdry(i)
 
           if (index_a2x_Sa_co2prog /= 0) then
              a2x(index_a2x_Sa_co2prog,ig) = cam_out(c)%co2prog(i) ! atm prognostic co2

@@ -38,6 +38,7 @@ integer :: idx_soa1 = -1
 integer :: idx_soa2 = -1
 integer :: idx_dst1 = -1
 integer :: idx_dst3 = -1
+integer :: idx_bac3 = -1
 integer :: idx_ncl3 = -1
 integer :: idx_so43 = -1
 logical :: bin_fluxes = .false.
@@ -48,7 +49,7 @@ logical :: initialized = .false.
 contains
 !==============================================================================
 
-subroutine modal_aero_deposition_init(bc1_ndx,pom1_ndx,soa1_ndx,soa2_ndx,dst1_ndx,dst3_ndx,ncl3_ndx,so43_ndx,num3_ndx)
+subroutine modal_aero_deposition_init(bc1_ndx,pom1_ndx,soa1_ndx,soa2_ndx,dst1_ndx,dst3_ndx,bac3_ndx,ncl3_ndx,so43_ndx,num3_ndx)
 
 ! set aerosol indices for re-mapping surface deposition fluxes:
 ! *_a1 = accumulation mode
@@ -58,7 +59,7 @@ subroutine modal_aero_deposition_init(bc1_ndx,pom1_ndx,soa1_ndx,soa2_ndx,dst1_nd
    ! can be initialized with user specified indices
    ! if called from aerodep_flx module (for prescribed modal aerosol fluxes) then these indices are specified
 
-   integer, optional, intent(in) :: bc1_ndx,pom1_ndx,soa1_ndx,soa2_ndx,dst1_ndx,dst3_ndx,ncl3_ndx,so43_ndx,num3_ndx
+   integer, optional, intent(in) :: bc1_ndx,pom1_ndx,soa1_ndx,soa2_ndx,dst1_ndx,dst3_ndx,bac3_ndx,ncl3_ndx,so43_ndx,num3_ndx
 
    ! if already initialized abort the run
    if (initialized) then
@@ -95,6 +96,11 @@ subroutine modal_aero_deposition_init(bc1_ndx,pom1_ndx,soa1_ndx,soa2_ndx,dst1_nd
    else
       call cnst_get_ind('dst_a3', idx_dst3,abort=.false.)
    endif
+   if (present(bac3_ndx)) then
+      idx_bac3 = bac3_ndx
+   else
+      call cnst_get_ind('bac_a3', idx_bac3,abort=.false.)
+   endif
    if (present(ncl3_ndx)) then
       idx_ncl3 = ncl3_ndx
    else
@@ -107,7 +113,7 @@ subroutine modal_aero_deposition_init(bc1_ndx,pom1_ndx,soa1_ndx,soa2_ndx,dst1_nd
    endif
 
 !  for 7 mode bin_fluxes will be false
-   bin_fluxes = idx_dst1>0 .and. idx_dst3>0 .and.idx_ncl3>0 .and. idx_so43>0
+   bin_fluxes = idx_dst1>0 .and. idx_dst3>0 .and.idx_ncl3>0 .and. idx_so43>0 .and. idx_bac3>0
    initialized = .true.
 
 end subroutine modal_aero_deposition_init
@@ -152,11 +158,15 @@ subroutine set_srf_wetdep(aerdepwetis, aerdepwetcw, cam_out)
       cam_out%dstwet3(i) = -(aerdepwetis(i,idx_dst3)+aerdepwetcw(i,idx_dst3))
       cam_out%dstwet4(i) = 0._r8
 
+      ! bacteria fluxes
+      cam_out%bacwet(i) = -(aerdepwetis(i,idx_bac3)+aerdepwetcw(i,idx_bac3))
+
       ! in rare cases, integrated deposition tendency is upward
       if (cam_out%bcphiwet(i) .lt. 0._r8) cam_out%bcphiwet(i) = 0._r8
       if (cam_out%ocphiwet(i) .lt. 0._r8) cam_out%ocphiwet(i) = 0._r8
       if (cam_out%dstwet1(i)  .lt. 0._r8) cam_out%dstwet1(i)  = 0._r8
       if (cam_out%dstwet3(i)  .lt. 0._r8) cam_out%dstwet3(i)  = 0._r8
+      if (cam_out%bacwet(i)   .lt. 0._r8) cam_out%bacwet(i)   = 0._r8
    enddo
 
 end subroutine set_srf_wetdep
@@ -204,6 +214,9 @@ subroutine set_srf_drydep(aerdepdryis, aerdepdrycw, cam_out)
       cam_out%dstdry3(i) = aerdepdryis(i,idx_dst3)+aerdepdrycw(i,idx_dst3)
       cam_out%dstdry4(i) = 0._r8
 
+      ! bacteria fluxes
+      cam_out%bacdry(i) = aerdepdryis(i,idx_bac3)+aerdepdrycw(i,idx_bac3)
+
       ! in rare cases, integrated deposition tendency is upward
       if (cam_out%bcphidry(i) .lt. 0._r8) cam_out%bcphidry(i) = 0._r8
       if (cam_out%bcphodry(i) .lt. 0._r8) cam_out%bcphodry(i) = 0._r8
@@ -211,6 +224,7 @@ subroutine set_srf_drydep(aerdepdryis, aerdepdrycw, cam_out)
       if (cam_out%ocphodry(i) .lt. 0._r8) cam_out%ocphodry(i) = 0._r8
       if (cam_out%dstdry1(i)  .lt. 0._r8) cam_out%dstdry1(i)  = 0._r8
       if (cam_out%dstdry3(i)  .lt. 0._r8) cam_out%dstdry3(i)  = 0._r8
+      if (cam_out%bacdry(i)   .lt. 0._r8) cam_out%bacdry(i)   = 0._r8
    enddo
 
 end subroutine set_srf_drydep
