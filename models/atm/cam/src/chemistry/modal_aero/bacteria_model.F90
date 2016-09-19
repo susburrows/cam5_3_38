@@ -249,16 +249,13 @@ subroutine bacteria_init()
     !-----------------------------------------------------------------------                                  
     use tracer_data,      only : trcdata_init
     use cam_history,      only : addfld, add_default, phys_decomp
-    use ppgrid,           only : begchunk, endchunk
     use constituents,     only : cnst_get_ind
 
     !-----------------------------------------------------------------------                                     
     !   ... local variables                                                                                      
     !-----------------------------------------------------------------------                                  
-    integer :: i,j,c,m
-    integer :: ierr,did,vid,nlon,nlat,ntimes,ncols
+    integer :: i,m
     integer :: number_flds
-    character(len=32) :: trc_datatype
 
     if ( masterproc ) then
        write(iulog,*) 'bacteria emissions are prescribed in :'//trim(datapath)//trim(filename)
@@ -267,23 +264,18 @@ subroutine bacteria_init()
     allocate (file%in_pbuf(n_bacteria_data))
     file%in_pbuf(:) = .false.
 
-    if (trim(datatype) == 'STEP_TIME') then
-       trc_datatype = 'CYCLICAL_LIST'
-    else
-       trc_datatype = datatype
-    end if
-
     call trcdata_init( specifier, filename, filelist, datapath, fields, file, &
                          rmv_file, data_cycle_yr, fixed_ymd, fixed_tod, datatype)
-    if (trim(datatype) == 'STEP_TIME') then
-       file%stepTime = .true.
-       file%curr_filename = filename
+
+    if ( file%fixed ) then
+	file%stepTime = .true.
     end if
 
     number_flds = 0
     if (associated(fields)) number_flds = size( fields )
 
     if ( number_flds .eq. n_bacteria_data ) then
+       file%initialized = .true.
        if ( masterproc ) then
           write(iulog,"(A21,I3,A20)") 'Successfully read in ',number_flds,' bacteria data fields'
        endif
@@ -322,11 +314,14 @@ subroutine bacteria_init()
        write(iulog,*) 'Done initializing bacteria emissions data'
     endif
 
-    do m = 1, bacteria_nbin
+!! FOR DEBUGGING
+!    debug: if (debug_mam_mom) then
+!       call addfld('bac_flx_debug', horiz_only, 'A', ' ', 'bac_flx_debug' ) 
+!       call add_default ('bac_flx_debug', 1, ' ')
+!    end if debug
+
+    do m = 1, bacteria_nbin+bacteria_nnum
        call cnst_get_ind(bacteria_names(m), bacteria_indices(m), abort=.false.)
-    enddo
-    do m = 1, bacteria_nnum
-       call cnst_get_ind(bacteria_names(bacteria_nbin+m), bacteria_indices(bacteria_nbin+m),abort=.false.)
     enddo
 
     has_bacteria = any(bacteria_indices(:) > 0)
@@ -364,13 +359,18 @@ subroutine advance_bacteria_data(state, pbuf2d)
 
     if (file%fixed) then
         write(iulog,*) 'bacteria_model: file%fixed = .TRUE.'
-        write(iulog,*) 'Not advancing bacteria data.' ! for debugging
+	file%stepTime = .true.
+!        write(iulog,*) 'Not advancing bacteria data.' ! for debugging
     else
         write(iulog,*) 'bacteria_model: file%fixed = .FALSE.'
+!        write(iulog,*) 'Advancing bacteria data ...' ! for debugging
+!	call advance_trcdata( fields, file, state, pbuf2d )
+!        write(iulog,*) 'Done advancing bacteria data ...' ! for debugging
+    end if
+
         write(iulog,*) 'Advancing bacteria data ...' ! for debugging
 	call advance_trcdata( fields, file, state, pbuf2d )
         write(iulog,*) 'Done advancing bacteria data ...' ! for debugging
-    end if
 
 ! Add new values to history files
     fldloop:do i = 1,n_bacteria_data
@@ -382,8 +382,8 @@ subroutine advance_bacteria_data(state, pbuf2d)
 
           call get_fld_data( fields, fields(i)%fldnam, outdata(:ncol,:), ncol, lchnk, pbuf_chnk)
 
-          ! work-around for interpolation errors that introduce negative values
-          ! near coasts: reset negative values to zero.
+          ! work-around for interpolation errors that can introduce negative values
+          ! : reset negative values to zero.
           where (outdata(:ncol,1) < small_bacteria_emit)
              outdata(:ncol,1) = 0.0_r8
           end where

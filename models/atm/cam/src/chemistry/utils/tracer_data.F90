@@ -626,7 +626,7 @@ contains
     real(r8) :: data_time
 
     call t_startf('advance_trcdata')
-    if ( .not.( file%fixed .and. file%initialized ) ) then
+    if ( .not.( file%fixed .and. file%initialized .and. .not. file%stepTime) ) then
 
        call get_model_time(file)
 
@@ -1622,8 +1622,10 @@ contains
           else
              fact1 = (file%datatimep+file%one_yr - file%curr_mod_time)/deltat
           endif
-       else
+       else if ( deltat > 0._r8 ) then
              fact1 = (file%datatimep - file%curr_mod_time)/deltat
+       else
+	     fact1 = 1._r8
        endif
 
        ! this assures that FIXED data are b4b on restarts
@@ -1685,6 +1687,10 @@ contains
              if (flds(f)%srf_fld) then
                 do i = 1,ncol
                    if (fact2 == 0) then  ! This needed as %data is not set if fact2=0 (and lahey compiler core dumps)
+!		     ! Output for debugging
+!		      write(iulog,*) 'fact1, f, nm, i, c  = ',fact1, f, nm, i, c
+!                     write(iulog,*) 'flds(f)%input(nm)%data(i,1,c) = ', flds(f)%input(nm)%data(i,1,c)
+!                     write(iulog,*) 'flds(f)%input(nm)%data(1:ncol,1,begchunk:endchunk) = ', flds(f)%input(nm)%data(1:ncol,1,c)
                       data_out(i,1) = &
                            fact1*flds(f)%input(nm)%data(i,1,c)
                    else

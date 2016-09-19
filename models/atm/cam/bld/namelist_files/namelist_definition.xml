@@ -3506,7 +3506,7 @@ Default: bacteria_emis_scaled_date.nc'
 contains a sequence of filenames for prescribed bacteria emissions.
 The filenames in this file are relative to the directory specied
 by <varname>bacteria_datapath</varname>.
-Default: filelist
+Default: none
 </entry>
 
 <entry id="bacteria_datapath" type="char*256" input_pathname="abs" category="cam_chem"
