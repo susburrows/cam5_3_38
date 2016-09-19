@@ -2,7 +2,7 @@
 ! Bacteria for Modal Aerosol Model
 !===============================================================================
 module bacteria_model 
-  use shr_kind_mod, only: r8 => shr_kind_r8, cl => shr_kind_cl
+  use shr_kind_mod, only: r8 => shr_kind_r8
   use ppgrid,       only: pcols
   use spmd_utils,   only: masterproc
   use abortutils,   only: endrun
@@ -36,13 +36,13 @@ module bacteria_model
   character(len=6), parameter :: bacteria_names(bacteria_nbin+bacteria_nnum) = (/ 'bac_a3', 'num_a3' /)
 
   ! Set bacteria diameter per mode (m).
-  real(r8),         parameter :: bacteria_diameter(bacteria_nbin) = (/ 4.0e-6 /)
+  real(r8),         parameter :: bacteria_diameter(bacteria_nbin) = (/ 2.0e-6 /)
 
 #elif ( defined MODAL_AERO_7MODE )
   character(len=6), parameter :: bacteria_names(bacteria_nbin+bacteria_nnum) = (/ 'bac_a7', 'num_a7' /)
 
   ! Set bacteria diameter per mode (m).
-  real(r8),         parameter :: bacteria_diameter(bacteria_nbin) = (/ 4.0e-6 /)
+  real(r8),         parameter :: bacteria_diameter(bacteria_nbin) = (/ 2.0e-6 /)
 #endif
 
   integer  :: bacteria_indices(bacteria_nbin+bacteria_nnum)
@@ -186,7 +186,7 @@ module bacteria_model
   ! local vars
     integer    :: ncol, lchnk
     integer :: i, m, ibac, inum
-    real(r8) :: x_mton
+    real(r8) :: bac_ntom
     real(r8), pointer :: cflx(:,:), bac_flx(:)
 
   ! Get model state
@@ -205,7 +205,7 @@ module bacteria_model
          bac_flx => fields(i)%data(1:ncol,1,lchnk)
       case default
          if ( masterproc ) then
-            write(iulog,*) 'Unknown field name '//fields%fldnam//' in progseasalts field ...'
+            write(iulog,*) 'Unknown field name '//fields%fldnam//' in bacteria_model field ...'
          endif
       end select
     end do fldloop
@@ -215,22 +215,25 @@ module bacteria_model
       return
     end if
 
-    ! set bacteria emissions
+    where (bac_flx(:ncol) < small_bacteria_emit)
+      bac_flx(:ncol) = 0.0_r8
+    end where
 
-    ! rebin and adjust bacteria emissons..
-    do m = 1,bacteria_nbin
+    do m = 1,bacteria_nnum
+       ! Will need to modify this code if number of bacteria number and mass tracers is not the same
 
-       ! If bacteria will be emitted into more than one bin, this code
-       ! will need to be modified.
+       ! bacteria emissions  -- emission files provide number emissions [# m-2 s-1]
+
+       inum = bacteria_indices(bacteria_nbin+m)
+       cflx(:ncol,inum) = cflx(:ncol,inum) + bacteria_emis_fact * bac_flx(:ncol)
+
+       ! Convert to and set mass emissions
+
+       ! number-to-mass conversion factor
+       bac_ntom = (pi * bacteria_density * (bacteria_diameter(m)**3._r8)) / 6._r8
 
        ibac = bacteria_indices(m)
-       cflx(:ncol,ibac) = bacteria_emis_fact * bac_flx(:ncol)
-
-       ! Mass-to-number conversion factor
-       x_mton = 6._r8 / (pi * bacteria_density * (bacteria_diameter(m)**3._r8))
-
-       inum = bacteria_indices(m+bacteria_nbin)
-       cflx(:ncol,ibac) = cflx(:ncol,ibac)*x_mton
+       cflx(:ncol,ibac) = bacteria_emis_fact * bac_flx(:ncol) * bac_ntom
 
     enddo
 
