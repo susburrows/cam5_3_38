@@ -246,9 +246,13 @@ else
        # GCC needs to be able to link to
        # nagfor runtime to get autoconf
        # tests to work.
-       # Hardcoded to NAG version 5.3 (ugh).
+       # No longer hard-coded to $(NAG), as we now have
+       # modules on goldbach. The modules on goldbach 
+       # now have $COMPILER_PATH defined, so we can 
+       # get the base path to the compiler without any 
+       # acrobatics.
        CFLAGS += -Wl,--as-needed,--allow-shlib-undefined
-       SLIBS += -L$(NAG)/lib/NAG_Fortran -lf53
+       SLIBS += -L$(COMPILER_PATH)/lib/NAG_Fortran -lf53
     endif
   endif
 endif
